@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="RestBoy.Control.ResponseForm"
+             x:Name="respForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestBoy.Control"
+             mc:Ignorable="d" 
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="50" />
+            <RowDefinition Height="9*" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="WhiteSmoke">
+            <StackPanel.Children>
+                <Button x:Name="btnBody" BorderThickness="0" Width="70"
+                        Background="Transparent" Click="btnBody_Click" >
+                    <TextBlock x:Name="tbkBody" Text="Body" Foreground="Gray" />
+                </Button>
+
+                <Button x:Name="btnCookies" BorderThickness="0" Width="80" 
+                        Background="Transparent" Click="btnCookies_Click" >
+                    <TextBlock x:Name="tbkCookies" Text="Cookies" Foreground="Gray" />
+                </Button>
+
+                <Button x:Name="btnHeaders" BorderThickness="0" Width="80" 
+                        Background="Transparent" Click="btnHeaders_Click" >
+                    <TextBlock x:Name="tbkHeaders" Text="Headers" Foreground="Gray" />
+                </Button>
+            </StackPanel.Children>
+        </StackPanel>
+
+        <local:RespBodyForm x:Name="respBody" MinHeight="500"
+                            Margin="10 10 0 0" Grid.Row="1" Visibility="Visible"/>
+
+        <WrapPanel x:Name="wpRespPanel" Grid.Row="1" HorizontalAlignment="Stretch">
+            <local:RespHeaderForm x:Name="respHeader" Visibility="Collapsed"/>
+        </WrapPanel>
+    </Grid>
+</UserControl>

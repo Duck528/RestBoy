@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="RestBoy.Control.JsonForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RestBoy.Control"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d"
+             MinHeight="300"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <TabControl x:Name="dynmTab" ItemsSource="{Binding TabItems}" SelectedItem="{Binding SelectedTab}">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="SelectionChanged">
+                <i:InvokeCommandAction Command="{Binding AddTabItemCommand}" 
+                                       CommandParameter="{Binding ElementName=dynmTab}"/>
+            </i:EventTrigger>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding TabLoadedCommand}"
+                                       CommandParameter="{Binding ElementName=dynmTab}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+        <TabControl.Resources>
+            <DataTemplate x:Key="TabHeader" DataType="TabItem">
+                <DockPanel>
+                    <Button Name="btnDelete" DockPanel.Dock="Right" Margin="5 0 0 0"
+                            Command="{Binding DelTabCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                        <Image Source="/RestBoy;component/Resource/delete.png" Height="11" Width="11"/>
+                    </Button>
+                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}"/>
+                </DockPanel>
+            </DataTemplate>
+            <Style TargetType="TextBox">
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="AcceptsReturn" Value="True"/>
+                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                <Setter Property="MaxLines" Value="5000"/>
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            </Style>
+        </TabControl.Resources>
+    </TabControl>
+</UserControl>
