@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RestBoy.Model
@@ -269,7 +270,10 @@ namespace RestBoy.Model
                         break;
                     }
             }
-            return builder.ToString();
+
+            string json = Regex.Replace(builder.ToString(), "\"\"", "\",\"")
+                .Replace("]\"", "],\"").Replace("}\"", "},\"");
+            return json;
         }
 
         #region Constructor
