@@ -14,6 +14,9 @@
         <converter:InvertBoolConverter x:Key="InvertBoolConverter"/>
         <converter:BorderThicknessConverter x:Key="BorderThicknessConverter"/>
         <converter:PathToNameConverter x:Key="PathToNameConverter"/>
+        <converter:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+        <converter:JTypeToColorConverter x:Key="JTypeToColorConverter"/>
+        <converter:JsonModelToTextConverter x:Key="JsonModelToTextConverter"/>
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsSelected" Value="False"/>
             <Setter Property="IsExpanded" Value="True"/>
@@ -22,41 +25,45 @@
         </Style>
     </UserControl.Resources>
 
-    <TreeView ItemsSource="{Binding JsonModels, IsAsync=True}">
-        <TreeView.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
-        </TreeView.Resources>
-        <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type TreeViewItem}" ItemsSource="{Binding Childs}">
-                <DockPanel Margin="3 5 0 0">
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top"
+    <DockPanel>
+        <TreeView ItemsSource="{Binding JsonModels, IsAsync=True}" MinWidth="500" DockPanel.Dock="Left">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
+            </TreeView.Resources>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type TreeViewItem}" ItemsSource="{Binding Childs}">
+                    <DockPanel Margin="3 5 0 0">
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top"
                                 Visibility="{Binding IsAddButton, Converter={StaticResource InvertBoolToVisibilityConverter}}">
-                        <TextBox Text="{Binding Key}" Width="60"
+                            <TextBox Text="{Binding Key}" Width="60"
                                  BorderThickness="{Binding ReadOnly, Converter={StaticResource BorderThicknessConverter}}"
                                  Background="Transparent"
+                                 FontWeight="Bold"
                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                 Foreground="{Binding ReadOnly, Converter={StaticResource BooleanToColorConverter}}"
                                  Visibility="{Binding DisplayArray, Converter={StaticResource InvertBoolToVisibilityConverter}}"
                                  IsReadOnly="{Binding ReadOnly}"/>
-                        <TextBlock Text=" : " Width="15" 
+                            <TextBlock Text=" : " Width="15" 
                                    Visibility="{Binding ReadOnly, Converter={StaticResource InvertBoolToVisibilityConverter}}"/>
-                        <ComboBox x:Name="cbxJsonType" ItemsSource="{Binding JsonPropTypes}" Width="60"
+                            <ComboBox x:Name="cbxJsonType" ItemsSource="{Binding JsonPropTypes}" Width="60"
                                   FontSize="11"
                                   VerticalAlignment="Center"
                                   SelectedItem="{Binding SelectedJsonType}" 
-                                  SelectionChanged="cbxJsonType_SelectionChanged"
                                   IsEnabled="{Binding ReadOnly, Converter={StaticResource InvertBoolConverter}}"/>
-                        <TextBox Text="{Binding Value}" Width="90"
+                            <TextBox Text="{Binding Value}" Width="90"
                                  Margin="3 0 0 0"
+                                 FontWeight="Bold"
                                  VerticalContentAlignment="Center"
                                  HorizontalContentAlignment="Center"
+                                 Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
                                  BorderThickness="{Binding DisplayAdd, Converter={StaticResource BorderThicknessConverter}}"
                                  IsEnabled="{Binding DisplayAdd, Converter={StaticResource InvertBoolConverter}}"
                                  Visibility="{Binding ShutOffValue, Converter={StaticResource InvertBoolToVisibilityConverter}}"/>
-                        
-                        <Button x:Name="btnOpenFile" Width="60" 
+
+                            <Button x:Name="btnOpenFile" Width="60" 
                                 Click="btnOpenFile_Click"
                                 CommandParameter="{Binding}"
                                 Margin="3 0 0 0"
@@ -64,31 +71,36 @@
                                 VerticalAlignment="Center"
                                 Content="Open"
                                 HorizontalContentAlignment="Center"/>
-                        <TextBlock Text="{Binding Value, Converter={StaticResource PathToNameConverter}}"
-                                   Margin="3 0 0 0"
+                            <TextBlock Text="{Binding Value, Converter={StaticResource PathToNameConverter}}"
+                                   Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
+                                   Margin="5 0 0 0"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding DisplayFile, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        
-                        <Button x:Name="btnDelJson" Width="30" Click="btnDelJson_Click"
+
+                            <Button x:Name="btnDelJson" Width="30" Click="btnDelJson_Click"
                                 Background="Transparent" BorderThickness="0"
                                 CommandParameter="{Binding}"
-                                Visibility="{Binding ReadOnly, 
+                                Visibility="{Binding ShutOffDelButton, 
                                 Converter={StaticResource InvertBoolToVisibilityConverter}}">
-                            <Button.Content>
-                                <Image Source="/RestBoy;component/Resource/delete.png" Width="13" Height="13"/>
-                            </Button.Content>
-                        </Button>
-                    </StackPanel>
-                    <Button Click="btnAddJson_Click" DockPanel.Dock="Bottom" Background="Transparent"
+                                <Button.Content>
+                                    <Image Source="/RestBoy;component/Resource/delete.png" Width="13" Height="13"/>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <Button Click="btnAddJson_Click" DockPanel.Dock="Bottom" Background="Transparent"
                             Margin="0 5 0 0" BorderThickness="0"
                             CommandParameter="{Binding}" Width="20" HorizontalAlignment="Left"
                             Visibility="{Binding DisplayAdd, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Button.Content>
-                            <Image Source="/RestBoy;component/Resource/plus.png" Width="12" Height="12"/>
-                        </Button.Content>
-                    </Button>
-                </DockPanel>
-            </HierarchicalDataTemplate>
-        </TreeView.ItemTemplate>
-    </TreeView>
+                            <Button.Content>
+                                <Image Source="/RestBoy;component/Resource/plus.png" Width="12" Height="12"/>
+                            </Button.Content>
+                        </Button>
+                    </DockPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+
+        <TextBox x:Name="tbxJson" DockPanel.Dock="Right">
+        </TextBox>
+    </DockPanel>
 </UserControl>

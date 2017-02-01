@@ -36,11 +36,6 @@ namespace RestBoy.Control
             InitializeComponent();
         }
 
-        private void cbxJsonType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
         private void btnDelJson_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -61,12 +56,22 @@ namespace RestBoy.Control
             var model = button.CommandParameter as JsonModel;
             if (model.SelectedJsonType == JType.Array)
             {
-                var child = new JsonModel(model, true);
-                child.DisplayArray = true;
+                var child = new JsonModel(model, true)
+                {
+                    DisplayArray = true,
+                    SelectedJsonType = JType.Value,
+                    ShutOffDelButton = false
+                };
                 model.Childs.Add(child);
             }
             else
-                model.Childs.Add(new JsonModel(model, false));
+            {
+                var child = new JsonModel(model, false)
+                {
+                    SelectedJsonType = JType.Value
+                };
+                model.Childs.Add(child);
+            }
         }
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)

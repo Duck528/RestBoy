@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,7 +86,7 @@ namespace RestBoy.Model
             get { return Enum.GetValues(typeof(JType)).Cast<JType>(); }
         }
 
-        private JType selectedJsonType;
+        private JType selectedJsonType = JType.Value;
         public JType SelectedJsonType
         {
             get { return this.selectedJsonType; }
@@ -205,6 +206,74 @@ namespace RestBoy.Model
                     this.RaisePropertyChanged("ShutOffValue");
                 }
             }
+        }
+        private bool shutOffDelButton = false;
+        public bool ShutOffDelButton
+        {
+            get { return this.shutOffDelButton; }
+            set
+            {
+                if (this.shutOffDelButton != value)
+                {
+                    this.shutOffDelButton = value;
+                    this.RaisePropertyChanged("ShutOffDelButton");
+                }
+            }
+        }
+
+        public string ToDisplayJson()
+        {
+            var builder = new StringBuilder();
+            if (this.Parent != null)
+                builder.Append("\"").Append(this.Key).Append("\":");
+
+            switch (this.SelectedJsonType)
+            {
+                case JType.Array:
+                    {
+                        builder.Append("[");
+                        int nRest = this.Childs.Count() - 1;
+                        foreach (var model in this.Childs)
+                        {
+                            builder.Append("\"").Append(model.Value).Append("\"");
+                            if (nRest > 0)
+                            {
+                                builder.Append(",");
+                                nRest -= 1;
+                            }
+                        }
+                        builder.Append("]").Append(",");
+                    }
+                    break;
+
+                case JType.File:
+                    {
+                        builder.Append("\"").Append(Path.GetFileName(this.Value)).Append("\"").Append(",");
+                        break;
+                    }
+
+
+                case JType.Object:
+                    {
+                        builder.Append("{");
+                        foreach (var model in this.Childs)
+                        {
+                            builder.Append(model.ToDisplayJson()).Append(",");
+                        }
+                        builder.Remove(builder.Length - 1, 1);
+                        builder.Append("}").Append(",");
+                        break;
+                    }
+
+                case JType.Value:
+                    {
+                        builder.Append("\"").Append(this.Value).Append("\"").Append(",");
+                        break;
+                    }
+            }
+            int lastRest = builder.ToString().LastIndexOf(',');
+            builder.Remove(lastRest, 1);
+            return builder.ToString();
         }
 
         #region Constructor

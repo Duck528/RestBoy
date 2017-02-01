@@ -50,7 +50,8 @@ namespace RestBoy.ViewModel
             {
                 Key = "{  }",
                 SelectedJsonType = JType.Object,
-                ShutOffValue = true
+                ShutOffValue = true,
+                ShutOffDelButton = true
             });
             this.JsonModels[0].Childs.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
                 delegate (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

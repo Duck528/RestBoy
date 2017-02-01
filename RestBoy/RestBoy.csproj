@@ -117,9 +117,12 @@
     <Compile Include="Control\ResponseForm.xaml.cs">
       <DependentUpon>ResponseForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\BooleanToColorConverter.cs" />
     <Compile Include="Converter\BorderThicknessConverter.cs" />
     <Compile Include="Converter\InvertBoolConverter.cs" />
     <Compile Include="Converter\InvertBoolToVisibilityConverter.cs" />
+    <Compile Include="Converter\JsonModelToTextConverter.cs" />
+    <Compile Include="Converter\JTypeToColorConverter.cs" />
     <Compile Include="Converter\PathToNameConverter.cs" />
     <Compile Include="Model\BodyModel.cs" />
     <Compile Include="Model\HeaderModel.cs" />
@@ -241,9 +244,7 @@
   <ItemGroup>
     <Resource Include="Resource\plus.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Selector\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
