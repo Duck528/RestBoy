@@ -242,13 +242,13 @@ namespace RestBoy.Model
                                 nRest -= 1;
                             }
                         }
-                        builder.Append("]").Append(",");
+                        builder.Append("]");
                     }
                     break;
 
                 case JType.File:
                     {
-                        builder.Append("\"").Append(Path.GetFileName(this.Value)).Append("\"").Append(",");
+                        builder.Append("\"").Append(Path.GetFileName(this.Value)).Append("\"");
                         break;
                     }
 
@@ -258,21 +258,20 @@ namespace RestBoy.Model
                         builder.Append("{");
                         foreach (var model in this.Childs)
                         {
-                            builder.Append(model.ToDisplayJson()).Append(",");
+                            builder.Append(model.ToDisplayJson());
                         }
                         builder.Remove(builder.Length - 1, 1);
-                        builder.Append("}").Append(",");
+                        builder.Append("}");
                         break;
                     }
 
                 case JType.Value:
                     {
-                        builder.Append("\"").Append(this.Value).Append("\"").Append(",");
+                        builder.Append("\"").Append(this.Value).Append("\"");
                         break;
                     }
             }
-            int lastRest = builder.ToString().LastIndexOf(',');
-            builder.Remove(lastRest, 1);
+
             return builder.ToString();
         }
 

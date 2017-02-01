@@ -18,7 +18,7 @@ namespace RestBoy.Converter
             switch (jsonType)
             {
                 case JType.Object:
-                    return new SolidColorBrush(Colors.Black);
+                    return new SolidColorBrush(Colors.DarkCyan);
 
                 case JType.Array:
                     return new BrushConverter().ConvertFrom("#c4a000");
@@ -28,8 +28,10 @@ namespace RestBoy.Converter
 
                 case JType.Value:
                     return new BrushConverter().ConvertFrom("#4e9a06");
+
+                default:
+                    return new SolidColorBrush(Colors.Black);
             }
-            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

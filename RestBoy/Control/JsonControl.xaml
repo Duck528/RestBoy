@@ -17,6 +17,7 @@
         <converter:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
         <converter:JTypeToColorConverter x:Key="JTypeToColorConverter"/>
         <converter:JsonModelToTextConverter x:Key="JsonModelToTextConverter"/>
+        <converter:JTypeToJTextConverter x:Key="JTypeToVisibilityConverter"/>
         <Style TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsSelected" Value="False"/>
             <Setter Property="IsExpanded" Value="True"/>
@@ -38,7 +39,7 @@
                     <DockPanel Margin="3 5 0 0">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top"
                                 Visibility="{Binding IsAddButton, Converter={StaticResource InvertBoolToVisibilityConverter}}">
-                            <TextBox Text="{Binding Key}" Width="60"
+                            <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}" Width="60"
                                  BorderThickness="{Binding ReadOnly, Converter={StaticResource BorderThicknessConverter}}"
                                  Background="Transparent"
                                  FontWeight="Bold"
@@ -53,7 +54,7 @@
                                   VerticalAlignment="Center"
                                   SelectedItem="{Binding SelectedJsonType}" 
                                   IsEnabled="{Binding ReadOnly, Converter={StaticResource InvertBoolConverter}}"/>
-                            <TextBox Text="{Binding Value}" Width="90"
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="90"
                                  Margin="3 0 0 0"
                                  FontWeight="Bold"
                                  VerticalContentAlignment="Center"
@@ -100,7 +101,21 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
-        <TextBox x:Name="tbxJson" DockPanel.Dock="Right">
-        </TextBox>
+        <TreeView DockPanel.Dock="Right" ItemsSource="{Binding JsonModels}">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type TreeViewItem}" ItemsSource="{Binding Childs}">
+                    <TextBlock x:Name="tbkValue" FontSize="12" Margin="3 5 0 0">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource JTypeToVisibilityConverter}">
+                                <Binding Path="SelectedJsonType"/>
+                                <Binding Path="Key"/>
+                                <Binding Path="Value"/>
+                                <Binding Path="ReadOnly"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </DockPanel>
 </UserControl>

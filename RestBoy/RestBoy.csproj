@@ -108,7 +108,7 @@
     <Compile Include="Control\ParamControl.xaml.cs">
       <DependentUpon>ParamControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Control\RespBodyForm.xaml.cs">
+    <Compile Include="Converter\RespBodyForm.xaml.cs">
       <DependentUpon>RespBodyForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\RespHeaderForm.xaml.cs">
@@ -123,6 +123,7 @@
     <Compile Include="Converter\InvertBoolToVisibilityConverter.cs" />
     <Compile Include="Converter\JsonModelToTextConverter.cs" />
     <Compile Include="Converter\JTypeToColorConverter.cs" />
+    <Compile Include="Converter\JTypeToJTextConverter.cs" />
     <Compile Include="Converter\PathToNameConverter.cs" />
     <Compile Include="Model\BodyModel.cs" />
     <Compile Include="Model\HeaderModel.cs" />
@@ -178,7 +179,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Control\RespBodyForm.xaml">
+    <Page Include="Converter\RespBodyForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
