@@ -96,7 +96,6 @@ namespace RestBoy.Model
                 {
                     this.selectedJsonType = value;
                     this.RaisePropertyChanged("SelectedJsonType");
-
                     this.ShutOffDisplay();
                     this.Childs.Clear();
                     this.Value = "";
@@ -221,10 +220,10 @@ namespace RestBoy.Model
             }
         }
 
-        public string ToDisplayJson()
+        public string ToJson()
         {
             var builder = new StringBuilder();
-            if (this.Parent != null)
+            if (this.Parent != null || "".Equals(this.Key.Trim()))
                 builder.Append("\"").Append(this.Key).Append("\":");
 
             switch (this.SelectedJsonType)
@@ -258,9 +257,8 @@ namespace RestBoy.Model
                         builder.Append("{");
                         foreach (var model in this.Childs)
                         {
-                            builder.Append(model.ToDisplayJson());
+                            builder.Append(model.ToJson());
                         }
-                        builder.Remove(builder.Length - 1, 1);
                         builder.Append("}");
                         break;
                     }
@@ -271,7 +269,6 @@ namespace RestBoy.Model
                         break;
                     }
             }
-
             return builder.ToString();
         }
 

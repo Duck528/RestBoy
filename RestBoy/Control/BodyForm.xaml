@@ -35,8 +35,10 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16 10 0 0">
             <StackPanel.Children>
-                <RadioButton x:Name="rdoFormData" Content="form-data" Margin="8 0 0 0" Click="rdoFormData_Click"/>
-                <RadioButton x:Name="rdoJson" Content="application/json" Margin="8 0 0 0" Click="rdoJson_Click"/>
+                <RadioButton x:Name="rdoFormData" Content="form-data" IsChecked="{Binding RdoFormData}"
+                             Margin="8 0 0 0" Click="rdoFormData_Click"/>
+                <RadioButton x:Name="rdoJson" Content="application/json" IsChecked="{Binding RdoAppJson}"
+                             Margin="8 0 0 0" Click="rdoJson_Click"/>
             </StackPanel.Children>
         </StackPanel>
         

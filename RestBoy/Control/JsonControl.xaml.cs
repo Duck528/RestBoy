@@ -54,24 +54,25 @@ namespace RestBoy.Control
                 return;
 
             var model = button.CommandParameter as JsonModel;
+            if (model == null)
+                return;
+
             if (model.SelectedJsonType == JType.Array)
             {
-                var child = new JsonModel(model, true)
+                model.Childs.Add(new JsonModel(model, true)
                 {
-                    DisplayArray = true,
                     SelectedJsonType = JType.Value,
-                    ShutOffDelButton = false
-                };
-                model.Childs.Add(child);
+                    DisplayArray = true
+                });
             }
             else
             {
-                var child = new JsonModel(model, false)
+                model.Childs.Add(new JsonModel(model, false)
                 {
                     SelectedJsonType = JType.Value
-                };
-                model.Childs.Add(child);
+                });
             }
+            
         }
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)

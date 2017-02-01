@@ -21,7 +21,7 @@ namespace RestBoy.Converter
             var builder = new StringBuilder();
             foreach (var model in models[0].Childs)
             {
-                builder.Append(model.ToDisplayJson());
+                builder.Append(model.ToJson());
             }
 
             return builder.ToString();

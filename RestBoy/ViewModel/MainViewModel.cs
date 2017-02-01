@@ -205,15 +205,23 @@ namespace RestBoy.ViewModel
                             orderby paramControl.ParamModel.Order ascending
                             select paramControl.ParamModel;
 
-
-
             // 입력된 Header를 가져온다
             var reqHeaders = from headerControl in this.Headers
                              select headerControl.Header;
 
             // 입력된 Body 매개변수를 가져온다
-            var reqBodies = from bodyControl in this.Bodies
-                            select bodyControl.Body;
+            // 만약, FormData가 선택되어져 있다면 bodyControl.Body를 가져오고,
+            // 만약, AppJson이 선택되어 있다면 JsonModels에서 Json으로 변환한다
+            if (this.RdoFormData == true)
+            {
+                var reqBodies = from bodyControl in this.Bodies
+                                select bodyControl.Body;
+            }
+            else
+            {
+                string json = this.JsonModels[0].ToJson();
+                MessageBox.Show(json);
+            }
         }
         #endregion
 
@@ -537,6 +545,36 @@ namespace RestBoy.ViewModel
             {
                 return this.respHeaders ??
                   (this.respHeaders = new ObservableCollection<HeaderModel>());
+            }
+        }
+        #endregion
+
+        #region BodyForm
+        private bool rdoFormData = false;
+        public bool RdoFormData
+        {
+            get { return this.rdoFormData; }
+            set
+            {
+                if (this.rdoFormData != value)
+                {
+                    this.rdoFormData = value;
+                    this.RaisePropertyChanged("RdoFormData");
+                }
+            }
+        }
+
+        private bool rdoAppJson = false;
+        public bool RdoAppJson
+        {
+            get { return this.rdoAppJson; }
+            set
+            {
+                if (this.rdoAppJson != value)
+                {
+                    this.rdoAppJson = value;
+                    this.RaisePropertyChanged("RdoAppJson");
+                }
             }
         }
         #endregion
