@@ -127,6 +127,7 @@
     <Compile Include="Converter\PathToNameConverter.cs" />
     <Compile Include="Model\BodyModel.cs" />
     <Compile Include="Model\HeaderModel.cs" />
+    <Compile Include="Model\HttpRespModel.cs" />
     <Compile Include="Model\JsonModel.cs" />
     <Compile Include="Model\LogModel.cs" />
     <Compile Include="Model\ParamModel.cs" />

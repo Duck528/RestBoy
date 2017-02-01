@@ -3,12 +3,14 @@ using Microsoft.Win32;
 using Mvvm.Commands;
 using RestBoy.Control;
 using RestBoy.Model;
+using RestBoy.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -187,17 +189,17 @@ namespace RestBoy.ViewModel
             // 전송 방식(Method)를 가져온다
             string method = this.SelectedMethod;
 
-            // 만약, GET이 아닌 경우 Data의 타입을 가져온다
-            if (method.Equals("GET") == false)
+            // 입력된 Header를 가져온다
+            var reqHeaders = from headerControl in this.Headers
+                             select headerControl.Header;
+            var headers = new Dictionary<string, string>();
+            foreach (var param in reqHeaders)
             {
-                UIElement uiElem = null;
-                bool flag = this.controlMap.TryGetValue("body", out uiElem);
-                if (flag == false)
-                    return;
-
-                var bodyForm = uiElem as BodyForm;
-                if (bodyForm == null)
-                    return;
+                string headerKey = param.Key.Trim();
+                string headerValue = param.Value.Trim();
+                if ("".Equals(headerKey) || "".Equals(headerValue))
+                    continue;
+                headers.Add(headerKey, headerValue);
             }
 
             // 입력된 URL Param을 가져온다 (입력된 순서대로)
@@ -205,22 +207,36 @@ namespace RestBoy.ViewModel
                             orderby paramControl.ParamModel.Order ascending
                             select paramControl.ParamModel;
 
-            // 입력된 Header를 가져온다
-            var reqHeaders = from headerControl in this.Headers
-                             select headerControl.Header;
-
-            // 입력된 Body 매개변수를 가져온다
-            // 만약, FormData가 선택되어져 있다면 bodyControl.Body를 가져오고,
-            // 만약, AppJson이 선택되어 있다면 JsonModels에서 Json으로 변환한다
-            if (this.RdoFormData == true)
+            var paramBuilder = new StringBuilder("?");
+            foreach (var param in reqParams)
             {
-                var reqBodies = from bodyControl in this.Bodies
-                                select bodyControl.Body;
+                if ("".Equals(param.Key.Trim()) || "".Equals(param.Value.Trim()))
+                    continue;
+
+                paramBuilder.Append(param.Key).Append("=").Append(param.Value).Append("&");
+            }
+            paramBuilder.Remove(paramBuilder.Length - 1, 1);
+            string paramText = paramBuilder.ToString();
+
+            if (method.Equals("GET"))
+            {
+                var res = ReqHttpHelper.Get(this.RequestUri, headers);
             }
             else
             {
-                string json = this.JsonModels[0].ToJson();
-                MessageBox.Show(json);
+                // 입력된 Body 매개변수를 가져온다
+                // 만약, FormData가 선택되어져 있다면 bodyControl.Body를 가져오고,
+                // 만약, AppJson이 선택되어 있다면 JsonModels에서 Json으로 변환한다
+                if (this.RdoFormData == true)
+                {
+                    var reqBodies = from bodyControl in this.Bodies
+                                    select bodyControl.Body;
+                }
+                else if (this.RdoAppJson == true)
+                {
+                    string json = this.JsonModels[0].ToJson();
+                    MessageBox.Show(json);
+                }
             }
         }
         #endregion
