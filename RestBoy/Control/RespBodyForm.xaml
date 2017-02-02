@@ -26,11 +26,11 @@
         </StackPanel>
 
         <TextBox x:Name="tbxRaw" Grid.Row="1" HorizontalAlignment="Stretch"
-                 Text="{Binding TestText, Mode=OneWay}"
+                 Text="{Binding RespText, Mode=OneWay}"
                  VerticalAlignment="Stretch" IsReadOnly="True" Margin="0 10 5 5" TextWrapping="Wrap"/>
 
         <WebBrowser x:Name="wbPreview" Grid.Row="1"
-                    util:WebBrowserHelper.Body="{Binding TestText, Mode=OneWay}"
+                    util:WebBrowserHelper.Body="{Binding RespText, Mode=OneWay}"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                     Visibility="Collapsed" />
     </Grid>

@@ -221,6 +221,7 @@ namespace RestBoy.ViewModel
             if (method.Equals("GET"))
             {
                 var res = ReqHttpHelper.Get(this.RequestUri, headers);
+                this.RespText = res.RespText;
             }
             else
             {
@@ -534,36 +535,45 @@ namespace RestBoy.ViewModel
         }
         #endregion
 
-        #region Response
-        private string testText = "12345698";
-        public string TestText
-        {
-            get { return this.testText; }
-            private set
-            {
-                if (this.testText.Equals(value) == false)
-                {
-                    this.testText = value;
-                    this.RaisePropertyChanged("TestText");
-                }
-            }
-        }
-        private Dictionary<string, UIElement> respFormMap = null;
-        public Dictionary<string, UIElement> RespFormMap
-        {
-            get { return this.respFormMap; }
-        }
-
+        #region RespHeaders
         private ObservableCollection<HeaderModel> respHeaders = null;
         public ObservableCollection<HeaderModel> RespHeaders
         {
             get
             {
                 return this.respHeaders ??
-                  (this.respHeaders = new ObservableCollection<HeaderModel>());
+                    (this.respHeaders = new ObservableCollection<HeaderModel>());
+            }
+            private set { this.respHeaders = value; }
+        }
+        #endregion
+
+        #region RespCookies
+        private ObservableCollection<HeaderModel> respCookies = null;
+        public ObservableCollection<HeaderModel> RespCookies
+        {
+            get
+            {
+                return this.respCookies ??
+                    (this.respCookies = new ObservableCollection<HeaderModel>());
+            }
+            private set { this.respCookies = value; }
+        }
+        #endregion
+
+        #region RespText
+        private string respText = string.Empty;
+        public string RespText
+        {
+            get { return this.respText; }
+            set
+            {
+                this.respText = value;
+                this.RaisePropertyChanged("RespText");
             }
         }
         #endregion
+
 
         #region BodyForm
         private bool rdoFormData = false;

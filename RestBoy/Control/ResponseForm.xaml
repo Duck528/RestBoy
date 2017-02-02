@@ -19,12 +19,10 @@
                         Background="Transparent" Click="btnBody_Click" >
                     <TextBlock x:Name="tbkBody" Text="Body" Foreground="Gray" />
                 </Button>
-
                 <Button x:Name="btnCookies" BorderThickness="0" Width="80" 
                         Background="Transparent" Click="btnCookies_Click" >
                     <TextBlock x:Name="tbkCookies" Text="Cookies" Foreground="Gray" />
                 </Button>
-
                 <Button x:Name="btnHeaders" BorderThickness="0" Width="80" 
                         Background="Transparent" Click="btnHeaders_Click" >
                     <TextBlock x:Name="tbkHeaders" Text="Headers" Foreground="Gray" />

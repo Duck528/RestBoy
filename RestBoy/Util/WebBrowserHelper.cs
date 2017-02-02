@@ -12,7 +12,8 @@ namespace RestBoy.Util
     {
         public static readonly DependencyProperty BodyProperty = 
             DependencyProperty.RegisterAttached(
-                "Body", typeof(string), 
+                "Body", 
+                typeof(string), 
                 typeof(WebBrowserHelper), new PropertyMetadata(OnBodyChanged));
 
         public static string GetBody(DependencyObject dependencyObject)
@@ -27,8 +28,13 @@ namespace RestBoy.Util
 
         private static void OnBodyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var webBrowser = (WebBrowser)d;
-            webBrowser.NavigateToString((string)e.NewValue);
+            var webBrower = d as WebBrowser;
+            if (webBrower != null)
+            {
+                string doc = Convert.ToString(e.NewValue).Trim();
+                if ("".Equals(doc) == false)
+                    webBrower.NavigateToString(e.NewValue as string ?? "&nbsp;");
+            }
         }
     }
 }
