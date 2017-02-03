@@ -6,26 +6,41 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:RestBoy.Control"
              xmlns:util="clr-namespace:RestBoy.Util"
+             xmlns:converter="clr-namespace:RestBoy.Converter"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converter:StatusToVisibilityConverter x:Key="StatusToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid x:Name="gdContainer">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="20"/>
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <StackPanel.Children>
-                <Button x:Name="btnRaw" Content="Raw" Height="auto"
-                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                        Width="60" FontSize="11" Click="btnRaw_Click"/>
-                <Button x:Name="btnPreview" Content="Preview" Height="auto"
-                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                        Width="80" FontSize="11" Click="btnPreview_Click"/>
-            </StackPanel.Children>
-        </StackPanel>
+        <DockPanel Grid.Row="0">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <StackPanel.Children>
+                    <Button x:Name="btnRaw" Content="Raw" Height="auto"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Width="60" FontSize="11" Click="btnRaw_Click"/>
+                    <Button x:Name="btnPreview" Content="Preview" Height="auto"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Width="80" FontSize="11" Click="btnPreview_Click"/>
+                </StackPanel.Children>
+            </StackPanel>
+            <TextBlock DockPanel.Dock="Right" Margin="0 0 10 0"
+                       Visibility="{Binding RespStatus, Converter={StaticResource StatusToVisibilityConverter}}"
+                       HorizontalAlignment="Right">
+                    <Run Text="Status: " Foreground="Gray"/>
+                    <Run Text="{Binding RespStatus}" Foreground="#FF1562AB"/>
+                    <Run Text="{Binding RespStatusMsg}" Foreground="#FF1562AB"/>
+            </TextBlock>
+        </DockPanel>
         <TextBox x:Name="tbxRaw"  Grid.Row="1" IsReadOnly="True"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                  Text="{Binding RespText, Mode=OneWay}" Visibility="Visible"
-                 TextWrapping="Wrap" AcceptsReturn="True"
+                 TextWrapping="WrapWithOverflow" AcceptsReturn="True"
                  HorizontalAlignment="Stretch" Margin="0 10 10 10"/>
         <WebBrowser x:Name="wbPreview" Grid.Row="1"
                     util:WebBrowserHelper.Body="{Binding RespText, Mode=OneWay}"

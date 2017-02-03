@@ -126,6 +126,7 @@
     <Compile Include="Converter\JTypeToColorConverter.cs" />
     <Compile Include="Converter\JTypeToJTextConverter.cs" />
     <Compile Include="Converter\PathToNameConverter.cs" />
+    <Compile Include="Converter\StatusToVisibilityConverter.cs" />
     <Compile Include="Model\BodyModel.cs" />
     <Compile Include="Model\HeaderModel.cs" />
     <Compile Include="Model\JsonModel.cs" />

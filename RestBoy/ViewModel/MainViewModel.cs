@@ -227,6 +227,9 @@ namespace RestBoy.ViewModel
                     this.RespText = res.RespText;
                 else
                     this.RespText = res.ErrorMsg;
+
+                this.RespStatus = res.StatusCode;
+                this.RespStatusMsg = res.StatusMsg;
             }
             else
             {
@@ -550,6 +553,35 @@ namespace RestBoy.ViewModel
                     (this.respHeaders = new ObservableCollection<HeaderModel>());
             }
             private set { this.respHeaders = value; }
+        }
+        #endregion
+
+        #region RespStatus
+        private int respStatus = -1;
+        public int RespStatus
+        {
+            get { return this.respStatus; }
+            set
+            {
+                if (this.respStatus != value)
+                {
+                    this.respStatus = value;
+                    this.RaisePropertyChanged("RespStatus");
+                }
+            }
+        }
+        private string respStatusMsg = string.Empty;
+        public string RespStatusMsg
+        {
+            get { return this.respStatusMsg; }
+            set
+            {
+                if (this.respStatusMsg.Equals(value) == false)
+                {
+                    this.respStatusMsg = value;
+                    this.RaisePropertyChanged("RespStatusMsg");
+                }
+            }
         }
         #endregion
 
