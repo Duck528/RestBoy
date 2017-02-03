@@ -230,6 +230,28 @@ namespace RestBoy.ViewModel
 
                 this.RespStatus = res.StatusCode;
                 this.RespStatusMsg = res.StatusMsg;
+
+                // Set Headers 
+                foreach (var key in res.Headers.Keys)
+                {
+                    this.RespHeaders.Add(new HeaderModel()
+                    {
+                        Key = key, 
+                        Value = res.Headers[key]
+                    });
+                }
+                this.NumHeaders = this.RespHeaders.Count();
+
+                // Set Cookies
+                foreach (var key in res.Cookies.Keys)
+                {
+                    this.RespCookies.Add(new HeaderModel()
+                    {
+                        Key = key,
+                        Value = res.Cookies[key]
+                    });
+                }
+                this.NumCookies = this.RespCookies.Count();
             }
             else
             {
@@ -554,6 +576,19 @@ namespace RestBoy.ViewModel
             }
             private set { this.respHeaders = value; }
         }
+        private int numHeaders = 0;
+        public int NumHeaders
+        {
+            get { return this.numHeaders; }
+            set
+            {
+                if (this.numHeaders != value)
+                {
+                    this.numHeaders = value;
+                    this.RaisePropertyChanged("NumHeaders");
+                }
+            }
+        }
         #endregion
 
         #region RespStatus
@@ -595,6 +630,19 @@ namespace RestBoy.ViewModel
                     (this.respCookies = new ObservableCollection<HeaderModel>());
             }
             private set { this.respCookies = value; }
+        }
+        private int numCookies = 0;
+        public int NumCookies
+        {
+            get { return this.numCookies; }
+            set
+            {
+                if (this.numCookies != value)
+                {
+                    this.numCookies = value;
+                    this.RaisePropertyChanged("NumHeaders");
+                }
+            }
         }
         #endregion
 

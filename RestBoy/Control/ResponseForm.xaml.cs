@@ -86,6 +86,7 @@ namespace RestBoy.Control
             this.tbkBody.Foreground = Brushes.Black;
 
             this.respHeader.Visibility = Visibility.Collapsed;
+            this.respCookie.Visibility = Visibility.Collapsed;
             this.respBody.Visibility = Visibility.Visible;
         }
 
@@ -96,6 +97,7 @@ namespace RestBoy.Control
 
             this.respHeader.Visibility = Visibility.Collapsed;
             this.respBody.Visibility = Visibility.Collapsed;
+            this.respCookie.Visibility = Visibility.Visible;
         }
 
         private void btnHeaders_Click(object sender, RoutedEventArgs e)
@@ -103,8 +105,9 @@ namespace RestBoy.Control
             this.ClickedSettingButton(sender, e);
             this.tbkHeaders.Foreground = Brushes.Black;
 
-            this.respHeader.Visibility = Visibility.Visible;
+            this.respCookie.Visibility = Visibility.Collapsed;
             this.respBody.Visibility = Visibility.Collapsed;
+            this.respHeader.Visibility = Visibility.Visible;
         }
     }
 }

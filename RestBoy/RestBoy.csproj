@@ -105,11 +105,15 @@
     <Compile Include="Control\LogControl.xaml.cs">
       <DependentUpon>LogControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\NumZeroToVisibilityConverter.cs" />
     <Compile Include="Control\ParamControl.xaml.cs">
       <DependentUpon>ParamControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\RespBodyForm.xaml.cs">
       <DependentUpon>RespBodyForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\RespCookiesForm.xaml.cs">
+      <DependentUpon>RespCookiesForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Control\RespHeaderForm.xaml.cs">
       <DependentUpon>RespHeaderForm.xaml</DependentUpon>
@@ -182,6 +186,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Control\RespBodyForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Control\RespCookiesForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

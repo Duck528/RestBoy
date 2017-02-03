@@ -5,8 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestBoy.Control"
+             xmlns:converter="clr-namespace:RestBoy.Converter"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converter:NumZeroToVisibilityConverter x:Key="NumZeroToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -14,17 +20,31 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Background="WhiteSmoke">
             <StackPanel.Children>
-                <Button x:Name="btnBody" BorderThickness="0" Width="70"
+                <Button x:Name="btnBody" BorderThickness="0" Width="80"
                         Background="Transparent" Click="btnBody_Click">
                     <TextBlock x:Name="tbkBody" Text="Body" Foreground="Gray"/>
                 </Button>
-                <Button x:Name="btnCookies" BorderThickness="0" Width="80" 
+                <Button x:Name="btnCookies" BorderThickness="0" Width="100" 
                         Background="Transparent" Click="btnCookies_Click" >
-                    <TextBlock x:Name="tbkCookies" Text="Cookies" Foreground="Gray" />
+                    <TextBlock x:Name="tbkCookies" Foreground="Gray">
+                        <Run Text="Cookies"/>
+                        <TextBlock Visibility="{Binding NumCookies, Converter={StaticResource NumZeroToVisibilityConverter}}">
+                            <Run Text="("/>
+                            <Run Text="{Binding NumCookies}"/>
+                            <Run Text=")"/>
+                        </TextBlock>
+                    </TextBlock>
                 </Button>
-                <Button x:Name="btnHeaders" BorderThickness="0" Width="80" 
+                <Button x:Name="btnHeaders" BorderThickness="0" Width="100" 
                         Background="Transparent" Click="btnHeaders_Click" >
-                    <TextBlock x:Name="tbkHeaders" Text="Headers" Foreground="Gray" />
+                    <TextBlock x:Name="tbkHeaders" Foreground="Gray">
+                        <Run Text="Headers"/>
+                        <TextBlock Visibility="{Binding NumHeaders, Converter={StaticResource NumZeroToVisibilityConverter}}">
+                            <Run Text="("/>
+                            <Run Text="{Binding NumHeaders}"/>
+                            <Run Text=")"/>
+                        </TextBlock>
+                    </TextBlock>
                 </Button>
             </StackPanel.Children>
         </StackPanel>
@@ -32,6 +52,7 @@
                             Margin="10 10 0 0" Grid.Row="1" Visibility="Visible"/>
         <WrapPanel x:Name="wpRespPanel" Grid.Row="1" HorizontalAlignment="Stretch" Margin="10 10 0 0">
             <local:RespHeaderForm x:Name="respHeader" Visibility="Collapsed"/>
+            <local:RespCookiesForm x:Name="respCookie" Visibility="Collapsed"/>
         </WrapPanel>
     </Grid>
 </UserControl>
