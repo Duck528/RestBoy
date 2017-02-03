@@ -119,6 +119,7 @@
     </Compile>
     <Compile Include="Converter\BooleanToColorConverter.cs" />
     <Compile Include="Converter\BorderThicknessConverter.cs" />
+    <Compile Include="Converter\ContentsWidthConverter.cs" />
     <Compile Include="Converter\InvertBoolConverter.cs" />
     <Compile Include="Converter\InvertBoolToVisibilityConverter.cs" />
     <Compile Include="Converter\JsonModelToTextConverter.cs" />

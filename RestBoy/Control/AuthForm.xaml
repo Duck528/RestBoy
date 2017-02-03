@@ -11,20 +11,16 @@
             <RowDefinition Height="*" MinHeight="40"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="240"/>
                 <ColumnDefinition Width="*" MinWidth="240"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-
             <TextBlock Grid.Column="0" Text="Type" Margin="40 0 0 0"
                        HorizontalAlignment="Left" VerticalAlignment="Center" />
-            
             <ComboBox x:Name="cbxAuthType" Grid.Column="1" VerticalContentAlignment="Center"
-                      Foreground="Gray"
-                      Height="30" VerticalAlignment="Center" MinWidth="80" />
+                      Foreground="Gray" Height="30" VerticalAlignment="Center" MinWidth="80" />
         </Grid>
     </Grid>
 </UserControl>

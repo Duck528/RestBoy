@@ -8,6 +8,7 @@
         xmlns:local="clr-namespace:RestBoy.View"
         xmlns:util="clr-namespace:RestBoy.Util"
         xmlns:controls="clr-namespace:RestBoy.Control"
+        xmlns:converters="clr-namespace:RestBoy.Converter"
         mc:Ignorable="d"
         HorizontalAlignment="Stretch"
         SizeChanged='Window_SizeChanged'
@@ -15,8 +16,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <util:EnumarableToTextConverter x:Key="EnumarableToTextConverter" />
-            <util:ConverterParamToText x:Key="ConverterParamToText" />
+            <util:EnumarableToTextConverter x:Key="EnumarableToTextConverter"/>
+            <util:ConverterParamToText x:Key="ConverterParamToText"/>
+            <converters:ContentsWidthConverter x:Key="ContentsWidthConverter"/>
 
             <Style x:Key="listboxItemStyle" TargetType="ListBoxItem">
                 <Setter Property="Template">
@@ -52,19 +54,16 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
             <Grid x:Name="gdAside" Grid.Column="0" Width="300">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="70" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-
                 <Border Grid.Row="0" Background="LightGray" />
                 <StackPanel Grid.Row="0">
                     <StackPanel.Children>
                         <TextBlock Text="Search History"
                                    Margin="7,10,0,0" FontSize="12" />
-
                         <Border x:Name="wrapTbxSeaerchLog" BorderThickness="1"
                                 Margin="4,5,7,0" BorderBrush="Black" CornerRadius="10">
                             <DockPanel>
@@ -80,7 +79,6 @@
                                 </TextBox>
                             </DockPanel>
                         </Border>
-
                     </StackPanel.Children>
                 </StackPanel>
                 <DataGrid Grid.Row="1">
@@ -91,10 +89,9 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-
             <ScrollViewer x:Name="svContents" Grid.Column="1" PreviewMouseWheel="svContents_PreviewMouseWheel"
-                          VerticalScrollBarVisibility="Auto" 
-                          HorizontalScrollBarVisibility="Hidden">
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
                 <ScrollViewer.Resources>
                     <Style TargetType="ScrollBar">
                         <Style.Triggers>
@@ -209,13 +206,11 @@
                             </StackPanel.Children>
                         </StackPanel>
                     </Grid>
-
                     <DockPanel x:Name="dpPanel" Grid.Row="3"/>
-                    <controls:ResponseForm Grid.Row="4" Margin="0 10 0 0"/>
+                    <controls:ResponseForm Grid.Row="4" 
+                                           Margin="0 10 0 0"/>
                 </Grid>
             </ScrollViewer>
-
-            
         </Grid>
     </Grid>
 </Window>

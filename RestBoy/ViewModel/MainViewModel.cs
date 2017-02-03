@@ -176,8 +176,10 @@ namespace RestBoy.ViewModel
                   (this.sendCommand = new DelegateCommand(SendRequest));
             }
         }
-        private void SendRequest()
+        private async void SendRequest()
         {
+            this.RespText = "Loading Now";
+
             this.requestUri = this.requestUri.Trim();
             if ("".Equals(this.requestUri))
             {
@@ -220,8 +222,11 @@ namespace RestBoy.ViewModel
 
             if (method.Equals("GET"))
             {
-                var res = ReqHttpHelper.Get(this.RequestUri, headers);
-                this.RespText = res.RespText;
+                var res = await ReqHttpHelper.Get(this.RequestUri, headers);
+                if (res.IsSuccess == true)
+                    this.RespText = res.RespText;
+                else
+                    this.RespText = res.ErrorMsg;
             }
             else
             {
@@ -574,7 +579,6 @@ namespace RestBoy.ViewModel
         }
         #endregion
 
-
         #region BodyForm
         private bool rdoFormData = false;
         public bool RdoFormData
@@ -617,6 +621,34 @@ namespace RestBoy.ViewModel
         }
         #endregion
 
+        #region WindowSize
+        private int winWidth;
+        public int WinWidth
+        {
+            get { return this.winWidth; }
+            set
+            {
+                if (this.winWidth != value)
+                {
+                    this.winWidth = value;
+                    this.RaisePropertyChanged("RespBodyFormWidth");
+                }
+            }
+        }
 
+        private int winHeight;
+        public int WinHeight
+        {
+            get { return this.winHeight; }
+            set
+            {
+                if (this.winHeight != value)
+                {
+                    this.winHeight = value;
+                    this.RaisePropertyChanged("WinHeight");
+                }
+            }
+        }
+        #endregion
     }
 }

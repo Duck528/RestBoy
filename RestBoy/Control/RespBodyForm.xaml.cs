@@ -27,8 +27,8 @@ namespace RestBoy.Control
 
         private void btnRaw_Click(object sender, RoutedEventArgs e)
         {
-            this.tbxRaw.Visibility = Visibility.Visible;
             this.wbPreview.Visibility = Visibility.Collapsed;
+            this.tbxRaw.Visibility = Visibility.Visible;
         }
 
         private void btnPreview_Click(object sender, RoutedEventArgs e)

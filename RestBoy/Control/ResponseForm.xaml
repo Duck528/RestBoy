@@ -9,15 +9,14 @@
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="50" />
+            <RowDefinition Height="50"/>
             <RowDefinition Height="9*" />
         </Grid.RowDefinitions>
-        
         <StackPanel Grid.Row="0" Orientation="Horizontal" Background="WhiteSmoke">
             <StackPanel.Children>
                 <Button x:Name="btnBody" BorderThickness="0" Width="70"
-                        Background="Transparent" Click="btnBody_Click" >
-                    <TextBlock x:Name="tbkBody" Text="Body" Foreground="Gray" />
+                        Background="Transparent" Click="btnBody_Click">
+                    <TextBlock x:Name="tbkBody" Text="Body" Foreground="Gray"/>
                 </Button>
                 <Button x:Name="btnCookies" BorderThickness="0" Width="80" 
                         Background="Transparent" Click="btnCookies_Click" >
@@ -29,11 +28,9 @@
                 </Button>
             </StackPanel.Children>
         </StackPanel>
-
         <local:RespBodyForm x:Name="respBody" MinHeight="500"
                             Margin="10 10 0 0" Grid.Row="1" Visibility="Visible"/>
-
-        <WrapPanel x:Name="wpRespPanel" Grid.Row="1" HorizontalAlignment="Stretch">
+        <WrapPanel x:Name="wpRespPanel" Grid.Row="1" HorizontalAlignment="Stretch" Margin="10 10 0 0">
             <local:RespHeaderForm x:Name="respHeader" Visibility="Collapsed"/>
         </WrapPanel>
     </Grid>

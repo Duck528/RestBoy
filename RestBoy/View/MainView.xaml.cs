@@ -24,6 +24,13 @@ namespace RestBoy.View
     public partial class MainView : Window
     {
         private MainViewModel mainViewModel = new MainViewModel();
+        public static readonly DependencyProperty IsModifiedProperty =
+            DependencyProperty.Register("IsModified", typeof(bool), typeof(MainView), new PropertyMetadata());
+        public bool IsModified
+        {
+            get { return (bool)GetValue(IsModifiedProperty); }
+            set { throw new Exception("Readonly property"); }
+        }
 
         public MainView()
         {

@@ -46,7 +46,7 @@ namespace RestBoy.Util
                 return false;
             }
         }
-        public static HttpRespVo Get(string uri, 
+        public async static Task<HttpRespVo> Get(string uri, 
             Dictionary<string, string> setHeaders=null, string urlParams="")
         {
             try
@@ -64,8 +64,9 @@ namespace RestBoy.Util
                 }
 
                 var result = new HttpRespVo();
-                using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
+                using (var response = await webRequest.GetResponseAsync())
                 {
+                    HttpWebResponse webResponse = (HttpWebResponse)response;
                     // RespText 
                     Stream respStream = webResponse.GetResponseStream();
                     StreamReader reader = new StreamReader(respStream, UTF8Encoding.UTF8, true);
@@ -96,6 +97,14 @@ namespace RestBoy.Util
                 return result;
             }
             catch (IOException exp)
+            {
+                return new HttpRespVo()
+                {
+                    IsSuccess = false,
+                    ErrorMsg = exp.Message
+                };
+            }
+            catch (InvalidCastException exp)
             {
                 return new HttpRespVo()
                 {
