@@ -85,6 +85,7 @@ namespace RestBoy.Control
                 return;
 
             string type = cbx.SelectedValue.ToString();
+            this.body.ValueType = type;
             switch (type)
             {
                 case "File":

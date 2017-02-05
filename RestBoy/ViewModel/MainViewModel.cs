@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Net.WebRequestMethods;
 
 namespace RestBoy.ViewModel
 {
@@ -229,9 +230,10 @@ namespace RestBoy.ViewModel
             }
 
             HttpRespVo res = null;
+            var reqHelper = new ReqHttpHelper();
             if (method.Equals("GET"))
-                res = await ReqHttpHelper.Get(uriWithParam, headers);
-            else
+                res = await reqHelper.Get(uriWithParam, headers);
+            else if (method.Equals("POST"))
             {
                 // 입력된 Body 매개변수를 가져온다
                 // 만약, FormData가 선택되어져 있다면 bodyControl.Body를 가져오고,
@@ -240,6 +242,38 @@ namespace RestBoy.ViewModel
                 {
                     var reqBodies = from bodyControl in this.Bodies
                                     select bodyControl.Body;
+                    var postParams = new Dictionary<string, object>();
+                    foreach (var bodyModel in reqBodies)
+                    {
+                        
+                        switch (bodyModel.ValueType)
+                        {
+                            case "File":
+                                {
+                                    byte[] data = null;
+                                    using (var fs = new FileStream(bodyModel.FilePath, FileMode.Open, FileAccess.Read))
+                                    {
+                                        data = new byte[fs.Length];
+                                        fs.Read(data, 0, data.Length);
+                                    }
+                                    postParams.Add(
+                                        bodyModel.Key,
+                                        new FileParam(bodyModel.DisplayFileName,
+                                        Path.GetExtension(bodyModel.FilePath), 
+                                        data,
+                                        "application/octet-stream"));
+                                }
+                                break;
+
+                            case "Text":
+                                {
+                                    postParams.Add(bodyModel.Key, bodyModel.Value);
+                                }
+                                break;
+                        }
+                    }
+                    res = await reqHelper.PostMultipart(uriWithParam, postParams, headers);
+
                 }
                 else if (this.RdoAppJson == true)
                 {
@@ -247,6 +281,8 @@ namespace RestBoy.ViewModel
                     MessageBox.Show(json);
                 }
             }
+
+
             if (res.IsSuccess == true)
             {
                 this.RespText = res.RespText;
