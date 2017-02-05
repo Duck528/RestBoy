@@ -272,7 +272,7 @@ namespace RestBoy.Model
 
                 case JType.Number:
                     {
-                        builder.Append(this.Value);
+                        builder.Append("\"").Append(this.Value).Append("\"");
                         break;
                     }
             }
