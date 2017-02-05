@@ -27,7 +27,7 @@ namespace RestBoy.Converter
                     return new SolidColorBrush(Colors.Black);
 
                 case JType.Number:
-                    return new BrushConverter().ConvertFrom("#4e9a06");
+                    return new SolidColorBrush(Colors.Green);
 
                 case JType.String:
                     return new SolidColorBrush(Colors.Red);
