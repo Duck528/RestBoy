@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,8 +47,7 @@ namespace RestBoy.Util
                 return false;
             }
         }
-        public async static Task<HttpRespVo> Get(string uri, 
-            Dictionary<string, string> setHeaders=null, string urlParams="")
+        public async static Task<HttpRespVo> Get(string uri, Dictionary<string, string> setHeaders=null)
         {
             try
             {
@@ -117,9 +117,14 @@ namespace RestBoy.Util
                 return new HttpRespVo()
                 {
                     IsSuccess = false,
-                    ErrorMsg = exp.Message
+                    ErrorMsg = exp.Message,
                 };
             }
+        }
+        public async static Task<HttpRespVo> PostMultipart(string uri, string urlParams,
+            Dictionary<string, string> setHeaders = null, Dictionary<string, string> formData=null)
+        {
+            return null;
         }
     }
 }

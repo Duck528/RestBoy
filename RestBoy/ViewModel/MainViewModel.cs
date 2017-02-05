@@ -209,50 +209,28 @@ namespace RestBoy.ViewModel
                             orderby paramControl.ParamModel.Order ascending
                             select paramControl.ParamModel;
 
-            var paramBuilder = new StringBuilder("?");
-            foreach (var param in reqParams)
+            string uriWithParam = string.Empty;
+            if (reqParams.Count() != 0)
             {
-                if ("".Equals(param.Key.Trim()) || "".Equals(param.Value.Trim()))
-                    continue;
-
-                paramBuilder.Append(param.Key).Append("=").Append(param.Value).Append("&");
+                var paramBuilder = new StringBuilder(this.RequestUri);
+                paramBuilder.Append("?");
+                foreach (var param in reqParams)
+                {
+                    if ("".Equals(param.Key.Trim()) || "".Equals(param.Value.Trim()))
+                        continue;
+                    paramBuilder.Append(param.Key).Append("=").Append(param.Value).Append("&");
+                }
+                paramBuilder.Remove(paramBuilder.Length - 1, 1);
+                uriWithParam = paramBuilder.ToString();
             }
-            paramBuilder.Remove(paramBuilder.Length - 1, 1);
-            string paramText = paramBuilder.ToString();
+            else
+            {
+                uriWithParam = this.RequestUri;
+            }
 
+            HttpRespVo res = null;
             if (method.Equals("GET"))
-            {
-                var res = await ReqHttpHelper.Get(this.RequestUri, headers);
-                if (res.IsSuccess == true)
-                    this.RespText = res.RespText;
-                else
-                    this.RespText = res.ErrorMsg;
-
-                this.RespStatus = res.StatusCode;
-                this.RespStatusMsg = res.StatusMsg;
-
-                // Set Headers 
-                foreach (var key in res.Headers.Keys)
-                {
-                    this.RespHeaders.Add(new HeaderModel()
-                    {
-                        Key = key, 
-                        Value = res.Headers[key]
-                    });
-                }
-                this.NumHeaders = this.RespHeaders.Count();
-
-                // Set Cookies
-                foreach (var key in res.Cookies.Keys)
-                {
-                    this.RespCookies.Add(new HeaderModel()
-                    {
-                        Key = key,
-                        Value = res.Cookies[key]
-                    });
-                }
-                this.NumCookies = this.RespCookies.Count();
-            }
+                res = await ReqHttpHelper.Get(uriWithParam, headers);
             else
             {
                 // 입력된 Body 매개변수를 가져온다
@@ -268,6 +246,39 @@ namespace RestBoy.ViewModel
                     string json = this.JsonModels[0].ToJson();
                     MessageBox.Show(json);
                 }
+            }
+            if (res.IsSuccess == true)
+            {
+                this.RespText = res.RespText;
+
+                // Set Headers 
+                foreach (var key in res.Headers.Keys)
+                {
+                    this.RespHeaders.Add(new HeaderModel()
+                    {
+                        Key = key,
+                        Value = res.Headers[key]
+                    });
+                }
+                this.NumHeaders = this.RespHeaders.Count();
+
+                // Set Cookies
+                foreach (var key in res.Cookies.Keys)
+                {
+                    this.RespCookies.Add(new HeaderModel()
+                    {
+                        Key = key,
+                        Value = res.Cookies[key]
+                    });
+                }
+                this.NumCookies = this.RespCookies.Count();
+
+                this.RespStatus = res.StatusCode;
+                this.RespStatusMsg = res.StatusMsg;
+            }
+            else
+            {
+                this.RespText = res.ErrorMsg;
             }
         }
         #endregion
