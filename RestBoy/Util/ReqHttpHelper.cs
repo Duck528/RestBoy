@@ -202,9 +202,11 @@ namespace RestBoy.Util
                 };
             }
         }
-        public async Task<HttpRespVo> PostMultipart(string uri, Dictionary<string, object> formDatas,
-            Dictionary<string, string> setHeaders = null)
+        public async Task<HttpRespVo> SendMultipart(string uri, string method,
+            Dictionary<string, object> formDatas, Dictionary<string, string> setHeaders = null)
         {
+            var result = new HttpRespVo();
+
             try
             {
                 var webRequest = WebRequest.Create(uri) as HttpWebRequest;
@@ -212,7 +214,7 @@ namespace RestBoy.Util
                     throw new InvalidCastException("This request it not a http request");
 
                 // Set method
-                webRequest.Method = "POST";
+                webRequest.Method = method;
                 // Set cookie container to retrive cookies
                 webRequest.CookieContainer = new CookieContainer();
                 // Set headers if not null
@@ -228,7 +230,6 @@ namespace RestBoy.Util
                 webRequest.ContentLength = binFormData.Length;
 
                 // Send form data to uri
-                var result = new HttpRespVo();
                 using (Stream reqStream = webRequest.GetRequestStream())
                 {
                     reqStream.Write(binFormData, 0, binFormData.Length);
@@ -274,27 +275,19 @@ namespace RestBoy.Util
                     ErrorMsg = exp.Message
                 };
             }
-            catch (IOException exp)
-            {
-                return new HttpRespVo()
-                {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message
-                };
-            }
             catch (Exception exp)
             {
-                return new HttpRespVo()
-                {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message
-                };
+                result.IsSuccess = false;
+                result.ErrorMsg = exp.Message;
+                return result;
             }
         }
         
-        public async Task<HttpRespVo> PostApplicationJson(string uri, string json,
+        public async Task<HttpRespVo> SendApplicationJson(string uri, string method, string json,
             Dictionary<string, string> setHeaders)
         {
+            var result = new HttpRespVo();
+
             try
             {
                 var webRequest = WebRequest.Create(uri) as HttpWebRequest;
@@ -302,7 +295,7 @@ namespace RestBoy.Util
                     throw new InvalidCastException("This request it not a http request");
 
                 // Set method
-                webRequest.Method = "POST";
+                webRequest.Method = method;
                 // Set cookie container to retrive cookies
                 webRequest.CookieContainer = new CookieContainer();
                 // Set headers if not null
@@ -316,7 +309,7 @@ namespace RestBoy.Util
                     streamWriter.Write(json);
                 }
 
-                var result = new HttpRespVo();
+                
                 using (var response = await webRequest.GetResponseAsync())
                 {
                     HttpWebResponse webResponse = (HttpWebResponse)response;
@@ -351,11 +344,9 @@ namespace RestBoy.Util
             }
             catch (Exception exp)
             {
-                return new HttpRespVo()
-                {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message
-                };
+                result.IsSuccess = false;
+                result.ErrorMsg = exp.Message;
+                return result;
             }
         }
     }

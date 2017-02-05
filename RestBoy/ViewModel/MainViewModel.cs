@@ -189,9 +189,6 @@ namespace RestBoy.ViewModel
             }
             // 입력된 Auth를 가져온다 (있다면)
 
-            // 전송 방식(Method)를 가져온다
-            string method = this.SelectedMethod;
-
             // 입력된 Header를 가져온다
             var reqHeaders = from headerControl in this.Headers
                              select headerControl.Header;
@@ -229,11 +226,14 @@ namespace RestBoy.ViewModel
                 uriWithParam = this.RequestUri;
             }
 
+            // 전송 방식(Method)를 가져온다
+            string method = this.SelectedMethod;
+
             HttpRespVo res = null;
             var reqHelper = new ReqHttpHelper();
             if (method.Equals("GET"))
                 res = await reqHelper.Get(uriWithParam, headers);
-            else if (method.Equals("POST"))
+            else
             {
                 // 입력된 Body 매개변수를 가져온다
                 // 만약, FormData가 선택되어져 있다면 bodyControl.Body를 가져오고,
@@ -272,13 +272,12 @@ namespace RestBoy.ViewModel
                                 break;
                         }
                     }
-                    res = await reqHelper.PostMultipart(uriWithParam, postParams, headers);
-
+                    res = await reqHelper.SendMultipart(uriWithParam, method, postParams, headers);
                 }
                 else if (this.RdoAppJson == true)
                 {
                     string json = this.JsonModels[0].ToJson();
-                    res = await reqHelper.PostApplicationJson(uriWithParam, json, headers);
+                    res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
                 }
             }
 

@@ -117,7 +117,7 @@ namespace RestBoy.View
             if (window == null)
                 return;
 
-            if (window.ActualWidth < 900)
+            if (window.ActualWidth < 1000)
                 this.gdAside.Visibility = Visibility.Collapsed;
             else
                 this.gdAside.Visibility = Visibility.Visible;
