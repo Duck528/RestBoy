@@ -61,7 +61,7 @@ namespace RestBoy.Control
             {
                 model.Childs.Add(new JsonModel(model, true)
                 {
-                    SelectedJsonType = JType.Value,
+                    SelectedJsonType = JType.String,
                     DisplayArray = true
                 });
             }
@@ -69,7 +69,7 @@ namespace RestBoy.Control
             {
                 model.Childs.Add(new JsonModel(model, false)
                 {
-                    SelectedJsonType = JType.Value
+                    SelectedJsonType = JType.String
                 });
             }
             

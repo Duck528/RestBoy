@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RestBoy.Model
 {
-    public enum JType { Value, Object, Array, File };
+    public enum JType { Object, Array, File, Number, String };
     public class JsonModel : ObservableObject
     {
         /// <summary>
@@ -87,7 +87,7 @@ namespace RestBoy.Model
             get { return Enum.GetValues(typeof(JType)).Cast<JType>(); }
         }
 
-        private JType selectedJsonType = JType.Value;
+        private JType selectedJsonType = JType.String;
         public JType SelectedJsonType
         {
             get { return this.selectedJsonType; }
@@ -264,9 +264,15 @@ namespace RestBoy.Model
                         break;
                     }
 
-                case JType.Value:
+                case JType.String:
                     {
                         builder.Append("\"").Append(this.Value).Append("\"");
+                        break;
+                    }
+
+                case JType.Number:
+                    {
+                        builder.Append(this.Value);
                         break;
                     }
             }

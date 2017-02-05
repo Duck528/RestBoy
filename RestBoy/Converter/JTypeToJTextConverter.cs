@@ -38,11 +38,17 @@ namespace RestBoy.Converter
                     else
                         return "\"" + key + "\"" + " : \"(base64)" + Path.GetFileName(value) + "\"";
 
-                case JType.Value:
+                case JType.String:
                     if ("".Equals(key.Trim()))
                         return "\"" + value + "\"";
                     else
                         return "\"" + key + "\"" + " : " + value + "\"";
+
+                case JType.Number:
+                    if ("".Equals(key.Trim()))
+                        return value;
+                    else
+                        return "\"" + key + "\"" + " : " + value;
 
                 default:
                     return "";

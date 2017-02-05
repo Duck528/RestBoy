@@ -44,6 +44,7 @@ namespace RestBoy.ViewModel
             var bodyForm = new BodyForm();
             bodyForm.DataContext = this;
             this.controlMap.Add("body", bodyForm);
+            this.RdoFormData = true;
 
             var authForm = new AuthForm();
             authForm.DataContext = this;
@@ -287,6 +288,7 @@ namespace RestBoy.ViewModel
                 this.RespText = res.RespText;
 
                 // Set Headers 
+                this.RespHeaders.Clear();
                 foreach (var key in res.Headers.Keys)
                 {
                     this.RespHeaders.Add(new HeaderModel()

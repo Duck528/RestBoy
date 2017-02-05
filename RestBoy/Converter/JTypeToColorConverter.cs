@@ -26,8 +26,11 @@ namespace RestBoy.Converter
                 case JType.File:
                     return new SolidColorBrush(Colors.Black);
 
-                case JType.Value:
+                case JType.Number:
                     return new BrushConverter().ConvertFrom("#4e9a06");
+
+                case JType.String:
+                    return new SolidColorBrush(Colors.Red);
 
                 default:
                     return new SolidColorBrush(Colors.Black);
