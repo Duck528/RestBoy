@@ -291,5 +291,72 @@ namespace RestBoy.Util
                 };
             }
         }
+        
+        public async Task<HttpRespVo> PostApplicationJson(string uri, string json,
+            Dictionary<string, string> setHeaders)
+        {
+            try
+            {
+                var webRequest = WebRequest.Create(uri) as HttpWebRequest;
+                if (webRequest == null)
+                    throw new InvalidCastException("This request it not a http request");
+
+                // Set method
+                webRequest.Method = "POST";
+                // Set cookie container to retrive cookies
+                webRequest.CookieContainer = new CookieContainer();
+                // Set headers if not null
+                if (setHeaders != null)
+                    this.SetHttpHeaders(webRequest, setHeaders);
+                // Set content type to application/json
+                webRequest.ContentType = "application/json";
+
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                }
+
+                var result = new HttpRespVo();
+                using (var response = await webRequest.GetResponseAsync())
+                {
+                    HttpWebResponse webResponse = (HttpWebResponse)response;
+                    // Resp text 
+                    Stream respStream = webResponse.GetResponseStream();
+                    StreamReader reader = new StreamReader(respStream, UTF8Encoding.UTF8, true);
+                    string respText = reader.ReadToEnd();
+                    result.RespText = respText;
+
+                    // Headers
+                    var headers = new Dictionary<string, string>();
+                    foreach (string headerName in webResponse.Headers)
+                    {
+                        headers.Add(headerName, webResponse.Headers.Get(headerName));
+                    }
+                    result.Headers = headers;
+
+                    // Cookies
+                    var cookies = new Dictionary<string, string>();
+                    foreach (Cookie cookie in webResponse.Cookies)
+                    {
+                        cookies.Add(cookie.Name, cookie.Value);
+                    }
+                    result.Cookies = cookies;
+
+                    // StatucCode and StatucMsg
+                    result.StatusCode = (int)webResponse.StatusCode;
+                    result.StatusMsg = webResponse.StatusCode.ToString();
+                }
+                result.IsSuccess = true;
+                return result;
+            }
+            catch (Exception exp)
+            {
+                return new HttpRespVo()
+                {
+                    IsSuccess = false,
+                    ErrorMsg = exp.Message
+                };
+            }
+        }
     }
 }
