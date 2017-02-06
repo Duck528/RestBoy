@@ -32,27 +32,9 @@ namespace RestBoy.Control
             InitializeComponent();
             this.paramModel = paramModel;
         }
-
-        private void tbxValue_LostFocus(object sender, RoutedEventArgs e)
+        public ParamControl()
         {
-            var textbox = sender as TextBox;
-            if (textbox == null)
-                return;
-
-            string text = textbox.Text.Trim();
-            textbox.Text = text;
-            this.ParamModel.Value = text;
-        }
-
-        private void tbxKey_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null)
-                return;
-
-            string text = textbox.Text.Trim();
-            textbox.Text = text;
-            this.ParamModel.Key = text;
+            InitializeComponent();
         }
     }
 }

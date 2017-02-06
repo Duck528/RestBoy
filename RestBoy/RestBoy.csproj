@@ -105,6 +105,7 @@
     <Compile Include="Control\LogControl.xaml.cs">
       <DependentUpon>LogControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\HttpMethodToColorConverter.cs" />
     <Compile Include="Converter\NumZeroToVisibilityConverter.cs" />
     <Compile Include="Control\ParamControl.xaml.cs">
       <DependentUpon>ParamControl.xaml</DependentUpon>

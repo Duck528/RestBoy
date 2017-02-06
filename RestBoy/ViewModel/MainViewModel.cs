@@ -23,11 +23,13 @@ using static System.Net.WebRequestMethods;
 
 namespace RestBoy.ViewModel
 {
-    class MainViewModel : ObservableObject
+    public class MainViewModel : ObservableObject
     {
         #region Constructor
-        public MainViewModel()
+        public MainViewModel(ObservableCollection<MainViewModel> mainViewModels)
         {
+            this.MainViewModels = mainViewModels;
+
             this.methods = new ObservableCollection<string>();
             methods.Add("GET");
             methods.Add("POST");
@@ -35,21 +37,6 @@ namespace RestBoy.ViewModel
             methods.Add("DELETE");
 
             this.SelectedMethod = "GET";
-
-            this.controlMap = new Dictionary<string, UIElement>();
-
-            var headerForm = new HeaderForm();
-            headerForm.DataContext = this;
-            this.controlMap.Add("header", headerForm);
-
-            var bodyForm = new BodyForm();
-            bodyForm.DataContext = this;
-            this.controlMap.Add("body", bodyForm);
-            this.RdoFormData = true;
-
-            var authForm = new AuthForm();
-            authForm.DataContext = this;
-            this.controlMap.Add("auth", authForm);
 
             this.JsonModels.Add(new JsonModel(null)
             {
@@ -73,6 +60,15 @@ namespace RestBoy.ViewModel
                         this.JsonModels[0].Key = "{ " + this.JsonModels[0].Childs.Count() + " }";
                     }
                 });
+        }
+        #endregion
+
+        #region MainViewModels
+        private ObservableCollection<MainViewModel> mainViewModels = null;
+        public ObservableCollection<MainViewModel> MainViewModels
+        {
+            get { return this.mainViewModels; }
+            private set { this.mainViewModels = value; }
         }
         #endregion
 
@@ -207,10 +203,7 @@ namespace RestBoy.ViewModel
             }
 
             // 입력된 URL Param을 가져온다 (입력된 순서대로)
-            var reqParams = from paramControl in this.Parameters
-                            orderby paramControl.ParamModel.Order ascending
-                            select paramControl.ParamModel;
-
+            var reqParams = from p in this.ParameterModels orderby p.Order select p;
             string uriWithParam = string.Empty;
             if (reqParams.Count() != 0)
             {
@@ -286,7 +279,6 @@ namespace RestBoy.ViewModel
                 }
             }
 
-
             if (res.IsSuccess == true)
             {
                 this.RespText = res.RespText;
@@ -316,6 +308,10 @@ namespace RestBoy.ViewModel
 
                 this.RespStatus = res.StatusCode;
                 this.RespStatusMsg = res.StatusMsg;
+
+                // 테스트
+                var model = this.DeepCopy();
+                this.MainViewModels.Add(model);
             }
             else
             {
@@ -371,6 +367,13 @@ namespace RestBoy.ViewModel
         #endregion
 
         #region AddParamCommand
+        private ObservableCollection<ParamModel> parameterModels = null;
+        public ObservableCollection<ParamModel> ParameterModels
+        {
+            get { return this.parameterModels ?? (this.parameterModels = new ObservableCollection<ParamModel>()); }
+            private set { this.parameterModels = value; }
+        }
+
         private ICommand addParamCommand = null;
         public ICommand AddParamCommand
         {
@@ -380,29 +383,13 @@ namespace RestBoy.ViewModel
         }
         private void AddParam()
         {
-            int order = this.Parameters.Count();
+            int order = this.ParameterModels.Count();
 
-            var paramModel = new ParamModel(order);
-            var param = new ParamControl(paramModel);
-            param.DataContext = this;
-            this.Parameters.Add(param);
+            var paramModel = new ParamModel(order, this.ParameterModels);
+            this.ParameterModels.Add(paramModel);
         }
 
-        private ICommand deleteParamCommand = null;
-        public ICommand DeleteParamCommand
-        {
-            get { return (this.deleteParamCommand) ??
-                    (this.deleteParamCommand = new DelegateCommand<object>(DeleteParam)); }
-        }
-        private void DeleteParam(object param)
-        {
-            var delParam = param as ParamControl;
-            if (delParam != null)
-            {
-                var paramModel = delParam.ParamModel;
-                this.Parameters.Remove(delParam);
-            }
-        }
+
         #endregion
 
         #region Params
@@ -418,14 +405,6 @@ namespace RestBoy.ViewModel
                     this.selectedParam = value;
                     this.RaisePropertyChanged("SelectedParam");
                 }
-            }
-        }
-        public ObservableCollection<ParamControl> Parameters
-        {
-            get
-            {
-                return (this.parameters) ??
-                    (this.parameters = new ObservableCollection<ParamControl>());
             }
         }
 
@@ -470,27 +449,33 @@ namespace RestBoy.ViewModel
         #endregion
 
         #region ButtonClickCommands
-        private Dictionary<string, UIElement> controlMap = null;
-
         private ICommand headerCommand = null;
         public ICommand HeaderCommand
         {
             get
             {
                 return this.headerCommand
-                    ?? (this.headerCommand = new DelegateCommand<object>(ClickedHeader));
+                    ?? (this.headerCommand = new DelegateCommand(ClickedHeader));
             }
         }
-        private void ClickedHeader(object panel)
+        private void ClickedHeader()
         {
-            var dockpanel = panel as DockPanel;
-            if (dockpanel == null)
-                return;
-
-            var uiElem = this.controlMap["header"];
-            dockpanel.Children.Clear();
-            dockpanel.Children.Add(uiElem);
-
+            this.DisplayAuthForm = false;
+            this.DisplayBodyForm = false;
+            this.DisplayHeaderForm = true;
+        }
+        private bool displayHeaderForm = false;
+        public bool DisplayHeaderForm
+        {
+            get { return this.displayHeaderForm; }
+            set
+            {
+                if (this.displayHeaderForm != value)
+                {
+                    this.displayHeaderForm = value;
+                    this.RaisePropertyChanged("DisplayHeaderForm");
+                }
+            }
         }
 
         private ICommand bodyCommand = null;
@@ -499,18 +484,27 @@ namespace RestBoy.ViewModel
             get
             {
                 return this.bodyCommand ??
-                  (this.bodyCommand = new DelegateCommand<object>(ClickedBody));
+                  (this.bodyCommand = new DelegateCommand(ClickedBody));
             }
         }
-        private void ClickedBody(object panel)
+        private void ClickedBody()
         {
-            var dockpanel = panel as DockPanel;
-            if (dockpanel == null)
-                return;
-
-            var uiElem = this.controlMap["body"];
-            dockpanel.Children.Clear();
-            dockpanel.Children.Add(uiElem);
+            this.DisplayAuthForm = false;
+            this.DisplayHeaderForm = false;
+            this.DisplayBodyForm = true;
+        }
+        private bool displayBodyForm = false;
+        public bool DisplayBodyForm
+        {
+            get { return this.displayBodyForm; }
+            set
+            {
+                if (this.displayBodyForm != value)
+                {
+                    this.displayBodyForm = value;
+                    this.RaisePropertyChanged("DisplayBodyForm");
+                }
+            }
         }
 
         private ICommand authCommand = null;
@@ -519,18 +513,27 @@ namespace RestBoy.ViewModel
             get
             {
                 return this.authCommand ??
-                  (this.authCommand = new DelegateCommand<object>(ClickedAuth));
+                  (this.authCommand = new DelegateCommand(ClickedAuth));
             }
         }
-        private void ClickedAuth(object panel)
+        private void ClickedAuth()
         {
-            var dockpanel = panel as DockPanel;
-            if (dockpanel == null)
-                return;
-
-            var uiElem = this.controlMap["auth"];
-            dockpanel.Children.Clear();
-            dockpanel.Children.Add(uiElem);
+            this.DisplayHeaderForm = false;
+            this.DisplayBodyForm = false;
+            this.DisplayAuthForm = true;
+        }
+        private bool displayAuthForm = false;
+        public bool DisplayAuthForm
+        {
+            get { return this.displayAuthForm; }
+            set
+            {
+                if (this.displayAuthForm != value)
+                {
+                    this.displayAuthForm = value;
+                    this.RaisePropertyChanged("DisplayAuthForm");
+                }
+            }
         }
         #endregion
 
@@ -543,6 +546,7 @@ namespace RestBoy.ViewModel
                 return this.bodies ??
                     (this.bodies = new ObservableCollection<BodyControl>());
             }
+            private set { this.bodies = value;}
         }
         private ICommand addBodyControlCommand = null;
         public ICommand AddBodyControlCommand
@@ -586,6 +590,7 @@ namespace RestBoy.ViewModel
                 return this.headers ?? 
                     (this.headers = new ObservableCollection<KeyValueControl>());
             }
+            private set { this.headers = value; }
         }
 
         private ICommand addKeyValCommand = null;
@@ -598,7 +603,7 @@ namespace RestBoy.ViewModel
         {
             var header = new KeyValueControl(new HeaderModel() { IsChecked=true });
             header.DataContext = this;
-            this.headers.Add(header);
+            this.Headers.Add(header);
         }
 
         private ICommand delKeyValCommand = null;
@@ -750,6 +755,7 @@ namespace RestBoy.ViewModel
                 return this.jsonModels ??
                     (this.jsonModels = new ObservableCollection<JsonModel>());
             }
+            private set { this.jsonModels = value; }
         }
         #endregion
 
@@ -780,6 +786,101 @@ namespace RestBoy.ViewModel
                     this.RaisePropertyChanged("WinHeight");
                 }
             }
+        }
+        #endregion
+
+        #region DeepCopy
+        public MainViewModel DeepCopy()
+        {
+            var model = new MainViewModel(this.MainViewModels);
+            var headers = new ObservableCollection<KeyValueControl>();
+            foreach (var headerControl in this.Headers)
+            {
+                var headerModel = new HeaderModel();
+                headerModel.Key = headerControl.Header.Key;
+                headerModel.Value = headerControl.Header.Value;
+                headerModel.IsChecked = headerControl.Header.IsChecked;
+                headers.Add(new KeyValueControl(headerModel));
+            }
+            model.Headers = headers;
+
+            var urlParams = new ObservableCollection<ParamModel>();
+            foreach (var p in this.ParameterModels)
+            {
+                var paramModel = new ParamModel(p.Order, urlParams);
+                paramModel.Key = p.Key;
+                paramModel.Value = p.Value;
+                urlParams.Add(paramModel);
+            }
+            model.ParameterModels = urlParams;
+
+            var multiparts = new ObservableCollection<BodyControl>();
+            foreach (var bodyControl in this.Bodies)
+            {
+                var bodyModel = new BodyModel();
+                bodyModel.Key = bodyControl.Body.Key;
+                bodyModel.Value = bodyControl.Body.Value;
+                bodyModel.ValueType = bodyControl.Body.ValueType;
+                bodyModel.IsChecked = bodyControl.Body.IsChecked;
+                bodyModel.FilePath = bodyControl.Body.FilePath;
+                bodyModel.DisplayFileName = bodyControl.Body.DisplayFileName;
+            }
+            model.Bodies = multiparts;
+
+            var jsonModels = new ObservableCollection<JsonModel>();
+            jsonModels.Add(new JsonModel(null)
+            {
+                SelectedJsonType = JType.Object,
+                ShutOffValue = true,
+                ShutOffDelButton = true,
+                HasKey = false,
+                ValueBorderThickness = new Thickness(0),
+                ReadOnlyValue = true
+            });
+            foreach (var jModel in this.JsonModels[0].Childs)
+            {
+                var copiedJsonModel = jModel.RecursiveDeepCopy();
+                jsonModels[0].Childs.Add(copiedJsonModel);
+            }
+            model.JsonModels = jsonModels;
+
+            var respHeaders = new ObservableCollection<HeaderModel>();
+            foreach (var headerModel in this.RespHeaders)
+            {
+                var hModel = new HeaderModel();
+                hModel.Key = headerModel.Key;
+                hModel.Value = headerModel.Value;
+                hModel.IsChecked = headerModel.IsChecked;
+                respHeaders.Add(hModel);
+            }
+            model.RespHeaders = respHeaders;
+            model.NumHeaders = respHeaders.Count;
+
+            var respCookies = new ObservableCollection<HeaderModel>();
+            foreach (var cookieModel in this.RespCookies)
+            {
+                var cModel = new HeaderModel();
+                cModel.Key = cookieModel.Key;
+                cModel.Value = cookieModel.Value;
+                cModel.IsChecked = cookieModel.IsChecked;
+                respCookies.Add(cModel);
+            }
+            model.RespCookies = respCookies;
+            model.numCookies = respCookies.Count;
+
+            model.RequestUri = this.RequestUri;
+            model.SelectedMethod = this.SelectedMethod;
+            model.RespText = this.RespText;
+            model.RespStatus = this.RespStatus;
+            model.RespStatusMsg = this.RespStatusMsg;
+            model.RdoFormData = true;
+            model.DisplayAuthForm = this.DisplayAuthForm;
+            model.DisplayBodyForm = this.DisplayBodyForm;
+            model.DisplayHeaderForm = this.DisplayHeaderForm;
+            // 나중에 ! 기호를 붙이지 않아도 되도록 리팩토링 하기
+            model.ParamDisplay = this.ParamDisplay;
+
+            return model;
         }
         #endregion
     }

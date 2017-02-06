@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RestBoy.Model
 {
-    class LogModel : ObservableObject
+    public class LogModel : ObservableObject
     {
         private string method = string.Empty;
         private string uri = string.Empty;

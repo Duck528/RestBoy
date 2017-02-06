@@ -401,5 +401,35 @@ namespace RestBoy.Model
             this.Parent = parent;
         }
         #endregion
+
+        #region RecursiveDeepCopy
+        public JsonModel RecursiveDeepCopy()
+        {
+            var jsonModel = new JsonModel(this.Parent);
+            jsonModel.DisplayAdd = this.DisplayAdd;
+            jsonModel.DisplayFile = this.DisplayFile;
+            jsonModel.DisplayFileName = this.DisplayFileName;
+            jsonModel.HasKey = this.HasKey;
+            jsonModel.HasTextBlockValue = this.HasTextBlockValue;
+            jsonModel.HasTextBoxValue = this.HasTextBoxValue;
+            jsonModel.Key = this.Key;
+            jsonModel.KeyBorderThickness = this.KeyBorderThickness;
+            jsonModel.ReadOnlyValue = this.ReadOnlyValue;
+            jsonModel.SelectedJsonType = this.SelectedJsonType;
+            jsonModel.ShutOffDelButton = this.ShutOffDelButton;
+            jsonModel.ShutOffValue = this.ShutOffValue;
+            jsonModel.Value = this.Value;
+            jsonModel.ValueBorderThickness = this.ValueBorderThickness;
+
+            var jsonModelChilds = new ObservableCollection<JsonModel>();
+            foreach (var model in this.Childs)
+            {
+                var jModel = model.RecursiveDeepCopy();
+                jsonModelChilds.Add(jModel);
+            }
+            jsonModel.Childs = jsonModelChilds;
+            return jsonModel;
+        }
+        #endregion
     }
 }

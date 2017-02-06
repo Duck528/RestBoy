@@ -19,6 +19,7 @@
             <util:EnumarableToTextConverter x:Key="EnumarableToTextConverter"/>
             <util:ConverterParamToText x:Key="ConverterParamToText"/>
             <converters:ContentsWidthConverter x:Key="ContentsWidthConverter"/>
+            <converters:HttpMethodToColorConverter x:Key="HttpMethodToColorConverter"/>
 
             <Style x:Key="listboxItemStyle" TargetType="ListBoxItem">
                 <Setter Property="Template">
@@ -81,13 +82,22 @@
                         </Border>
                     </StackPanel.Children>
                 </StackPanel>
-                <DataGrid Grid.Row="1">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Binding="{Binding .}" Width="*"/>
-                        <DataGridTextColumn Header="Method" Binding="{Binding .}" Width="*"/>
-                        <DataGridTextColumn Header="Uri" Binding="{Binding .}" Width="3*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <ListBox x:Name="lbxHistories" ItemsSource="{Binding MainViewModels}" Grid.Row="1" SelectedItem="{Binding SelectedViewModel}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <StackPanel.Children>
+                                    <TextBlock Text="{Binding SelectedMethod}" VerticalAlignment="Top" Margin="5 3 3 0"
+                                               Foreground="{Binding SelectedMethod, Converter={StaticResource HttpMethodToColorConverter}}"
+                                               FontSize="9" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                                    <TextBlock Text="{Binding RequestUri}" FontWeight="Bold" Margin="5 0 2 0"
+                                               VerticalAlignment="Center" Foreground="Gray"/>
+                                </StackPanel.Children>
+                            </StackPanel>
+                            
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
             <ScrollViewer x:Name="svContents" Grid.Column="1" PreviewMouseWheel="svContents_PreviewMouseWheel"
                           VerticalScrollBarVisibility="Auto"
@@ -142,9 +152,14 @@
                     <StackPanel x:Name="spParams" Grid.Row="1" Margin="0,15,0,0"
                             Visibility="{Binding ParamDisplay, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel.Children>
-                            <ListBox ItemsSource="{Binding Parameters}" BorderThickness="0" Background="WhiteSmoke"
+                            <ListBox ItemsSource="{Binding ParameterModels}" BorderThickness="0" Background="WhiteSmoke"
                                  ItemContainerStyle="{DynamicResource listboxItemStyle}" 
                                  SelectedItem="{Binding SelectedParam}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <controls:ParamControl/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
                             </ListBox>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -179,14 +194,12 @@
                             <StackPanel.Children>
                                 <Button x:Name="btnAuth" BorderThickness="0" Width="120"
                                         Command="{Binding AuthCommand}"
-                                        CommandParameter="{Binding ElementName=dpPanel}"
                                         Background="Transparent" Click="ClickedSettingButton" >
                                     <TextBlock x:Name="tbkAuth" Text="Authorization" Foreground="Gray" />
                                 </Button>
 
                                 <Button x:Name="btnBody" Width="120" BorderThickness="0"
                                         Command="{Binding BodyCommand}"
-                                        CommandParameter="{Binding ElementName=dpPanel}"
                                         IsEnabled="{Binding EnableBodyButton}"
                                         Background="Transparent" Click="ClickedSettingButton" >
                                     <StackPanel Orientation="Horizontal">
@@ -199,14 +212,18 @@
                                 </Button>
 
                                 <Button x:Name="btnHeaders" Width="120" BorderThickness="0" 
-                                    Command="{Binding HeaderCommand}" CommandParameter="{Binding ElementName=dpPanel}"
-                                    Background="Transparent" Click="ClickedSettingButton" Height="35" VerticalAlignment="Top" >
+                                        Command="{Binding HeaderCommand}"
+                                        Background="Transparent" Click="ClickedSettingButton" Height="35" VerticalAlignment="Top" >
                                     <TextBlock x:Name="tbkHeaders" Text="Headers" Foreground="Gray" />
                                 </Button>
                             </StackPanel.Children>
                         </StackPanel>
                     </Grid>
-                    <DockPanel x:Name="dpPanel" Grid.Row="3"/>
+                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch">
+                        <controls:HeaderForm Visibility="{Binding DisplayHeaderForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <controls:BodyForm Visibility="{Binding DisplayBodyForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <controls:AuthForm Visibility="{Binding DisplayAuthForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
                     <controls:ResponseForm Grid.Row="4" 
                                            Margin="0 10 0 0"/>
                 </Grid>

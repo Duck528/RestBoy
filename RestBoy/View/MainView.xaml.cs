@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Globalization;
 using System.Collections;
 using System.Windows.Controls.Primitives;
+using System.Collections.ObjectModel;
 
 // Branch Push Test
 namespace RestBoy.View
@@ -24,12 +25,33 @@ namespace RestBoy.View
     /// </summary>
     public partial class MainView : Window
     {
-        private MainViewModel mainViewModel = new MainViewModel();
+        private ObservableCollection<MainViewModel> mainViewModels = new ObservableCollection<MainViewModel>();
+        public ObservableCollection<MainViewModel> MainViewModels
+        {
+            get { return this.mainViewModels; }
+        }
+        private MainViewModel selectedViewModel = null;
+        public MainViewModel SelectedViewModel
+        {
+            get { return this.selectedViewModel; }
+            set
+            {
+                if (this.selectedViewModel != value)
+                {
+                    this.selectedViewModel = value;
+                    this.DataContext = value.DeepCopy();
+                    this.ClearSettingButton();
+                }
+            }
+        }
 
         public MainView()
         {
             InitializeComponent();
-            this.DataContext = this.mainViewModel;
+            var mainViewModel = new MainViewModel(mainViewModels);
+
+            this.DataContext = mainViewModel;
+            this.lbxHistories.DataContext = this;
         }
 
         private TextDecorationCollection GetUnderline(SolidColorBrush color, int thickness)
@@ -42,6 +64,7 @@ namespace RestBoy.View
             strike.PenThicknessUnit = TextDecorationUnit.FontRecommended;
 
             collection.Add(strike);
+
             return collection;
         }
 
