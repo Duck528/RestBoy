@@ -8,10 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RestBoy.Model
 {
-    public enum JType { Object, Array, File, Number, String };
+    public enum JType { Object, Array, File, Number, String, Boolean };
     public class JsonModel : ObservableObject
     {
         /// <summary>
@@ -47,19 +48,7 @@ namespace RestBoy.Model
                 }
             }
         }
-        private bool displayArray = false;
-        public bool DisplayArray
-        {
-            get { return this.displayArray; }
-            set
-            {
-                if (this.displayArray != value)
-                {
-                    this.displayArray = value;
-                    this.RaisePropertyChanged("DisplayArray");
-                }
-            }
-        }
+
         private bool displayFileName = false;
         public bool DisplayFileName
         {
@@ -75,16 +64,22 @@ namespace RestBoy.Model
         }
         private void ShutOffDisplay()
         {
-            this.DisplayFile = false;
             this.DisplayAdd = false;
-            this.DisplayArray = false;
-            this.ShutOffValue = false;
-            this.DisplayFileName = false;
+            this.HasTextBlockValue = false;
+            this.HasTextBoxValue = false;
+            this.DisplayFile = false;
         }
 
         public IEnumerable<JType> JsonPropTypes
         {
-            get { return Enum.GetValues(typeof(JType)).Cast<JType>(); }
+            get
+            {
+                if (this.HasKey == true)
+                    return Enum.GetValues(typeof(JType)).Cast<JType>();
+                else
+                    return Enum.GetValues(typeof(JType)).Cast<JType>()
+                        .Where(v => v != JType.File).ToList();
+            }
         }
 
         private JType selectedJsonType = JType.String;
@@ -104,18 +99,31 @@ namespace RestBoy.Model
                     {
                         case JType.Object:
                             this.DisplayAdd = true;
+                            this.ReadOnlyValue = true;
+                            this.ValueBorderThickness = new Thickness(0);
                             this.Value = "{ " + this.Childs.Count() + " }";
+                            this.HasTextBoxValue = true;
                             break;
 
                         case JType.Array:
                             this.DisplayAdd = true;
+                            this.ReadOnlyValue = true;
+                            this.ValueBorderThickness = new Thickness(0);
                             this.Value = "[ " + this.Childs.Count() + " ]";
+                            this.HasTextBoxValue = true;
                             break;
 
                         case JType.File:
                             this.ShutOffValue = true;
                             this.DisplayFile = true;
                             this.Value = "선택된 파일이 없습니다";
+                            this.HasTextBlockValue = true;
+                            break;
+
+                        default:
+                            this.ReadOnlyValue = false;
+                            this.ValueBorderThickness = new Thickness(0, 0, 0, 1);
+                            this.HasTextBoxValue = true;
                             break;
                     }
                 }
@@ -181,19 +189,102 @@ namespace RestBoy.Model
             private set { this.parent = value; }
         }
 
-        private bool readOnly = false;
-        public bool ReadOnly
+        #region HasKeyOption
+        private bool hasKey = false;
+        public bool HasKey
         {
-            get { return this.readOnly; }
+            get { return this.hasKey; }
             set
             {
-                if (this.readOnly != value)
+                if (this.hasKey != value)
                 {
-                    this.readOnly = value;
-                    this.RaisePropertyChanged("ReadOnly");
+                    this.hasKey = value;
+                    this.RaisePropertyChanged("HasKey");
                 }
             }
         }
+        #endregion
+
+        #region HasTextBoxValueOption
+        private bool hasTextBoxValue = true;
+        public bool HasTextBoxValue
+        {
+            get { return this.hasTextBoxValue; }
+            set
+            {
+                if (this.hasTextBoxValue != value)
+                {
+                    this.hasTextBoxValue = value;
+                    this.RaisePropertyChanged("HasTextBoxValue");
+                }
+            }
+        }
+        #endregion
+
+        #region HasTextBlockValueOption
+        private bool hasTextBlockValue = false;
+        public bool HasTextBlockValue
+        {
+            get { return this.hasTextBlockValue; }
+            set
+            {
+                if (this.hasTextBlockValue != value)
+                {
+                    this.hasTextBlockValue = value;
+                    this.RaisePropertyChanged("HasTextBlockValue");
+                }
+            }
+        }
+        #endregion
+
+        #region ReadOnlyValueOption
+        private bool readonlyValue = false;
+        public bool ReadOnlyValue
+        {
+            get { return this.readonlyValue; }
+            set
+            {
+                if (this.readonlyValue != value)
+                {
+                    this.readonlyValue = value;
+                    this.RaisePropertyChanged("ReadOnlyValue");
+                }
+            }
+        }
+        #endregion
+
+        #region ValueBorderThicknessOption
+        private Thickness valueBorderThickness = new Thickness(1);
+        public Thickness ValueBorderThickness
+        {
+            get { return this.valueBorderThickness; }
+            set
+            {
+                if (this.valueBorderThickness != value)
+                {
+                    this.valueBorderThickness = value;
+                    this.RaisePropertyChanged("ValueBorderThickness");
+                }
+            }
+        }
+        #endregion
+
+        #region KeyBorderThicknessOption
+        private Thickness keyBorderThickness = new Thickness(1);
+        public Thickness KeyBorderThickness
+        {
+            get { return this.keyBorderThickness; }
+            set
+            {
+                if (this.keyBorderThickness != value)
+                {
+                    this.keyBorderThickness = value;
+                    this.RaisePropertyChanged("ValueBorderThickness");
+                }
+            }
+        }
+        #endregion
+
         private bool shutOffValue = false;
         public bool ShutOffValue
         {
@@ -283,7 +374,7 @@ namespace RestBoy.Model
         }
 
         #region Constructor
-        public JsonModel(JsonModel parent, bool isReadOnly)
+        public JsonModel(JsonModel parent)
         {
             this.Childs = new ObservableCollection<JsonModel>();
             this.Childs.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
@@ -304,8 +395,6 @@ namespace RestBoy.Model
                         }
                     }
                 });
-
-            this.ReadOnly = isReadOnly;
             this.Parent = parent;
         }
         #endregion

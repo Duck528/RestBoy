@@ -39,50 +39,34 @@
                     <DockPanel Margin="3 5 0 0">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top"
                                 Visibility="{Binding IsAddButton, Converter={StaticResource InvertBoolToVisibilityConverter}}">
-                            <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}" Width="60"
-                                 BorderThickness="{Binding ReadOnly, Converter={StaticResource BorderThicknessConverter}}"
-                                 Background="Transparent"
-                                 FontWeight="Bold"
-                                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                                 Foreground="{Binding ReadOnly, Converter={StaticResource BooleanToColorConverter}}"
-                                 Visibility="{Binding DisplayArray, Converter={StaticResource InvertBoolToVisibilityConverter}}"
-                                 IsReadOnly="{Binding ReadOnly}"/>
-                            <TextBlock Text=" : " Width="15" 
-                                   Visibility="{Binding ReadOnly, Converter={StaticResource InvertBoolToVisibilityConverter}}"/>
-                            <ComboBox x:Name="cbxJsonType" ItemsSource="{Binding JsonPropTypes}" Width="60"
-                                  FontSize="11"
-                                  VerticalAlignment="Center"
-                                  SelectedItem="{Binding SelectedJsonType}" 
-                                  IsEnabled="{Binding ReadOnly, Converter={StaticResource InvertBoolConverter}}"/>
-                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="90"
-                                 Margin="3 0 0 0"
-                                 FontWeight="Bold"
-                                 VerticalContentAlignment="Center"
-                                 HorizontalContentAlignment="Center"
-                                 Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
-                                 BorderThickness="{Binding DisplayAdd, Converter={StaticResource BorderThicknessConverter}}"
-                                 IsEnabled="{Binding DisplayAdd, Converter={StaticResource InvertBoolConverter}}"
-                                 Visibility="{Binding ShutOffValue, Converter={StaticResource InvertBoolToVisibilityConverter}}"/>
-
+                            <TextBox x:Name="tbxKey" Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}" Width="60" 
+                                     BorderThickness="{Binding KeyBorderThickness}"
+                                     Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
+                                     Visibility="{Binding HasKey, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text=" :" Width="15"  Margin="5 0 5 0"
+                                       Visibility="{Binding HasKey, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <ComboBox x:Name="cbxJsonType"  ItemsSource="{Binding JsonPropTypes}" 
+                                      FontSize="10" SelectedItem="{Binding SelectedJsonType}" VerticalAlignment="Center" Width="60"/>
+                            <TextBox x:Name="tbxValue" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="60" 
+                                     BorderThickness="{Binding ValueBorderThickness}"
+                                     Visibility="{Binding HasTextBoxValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                     Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
+                                     IsReadOnly="{Binding ReadOnlyValue}" Margin="5 0 0 0"/>
                             <Button x:Name="btnOpenFile" Width="60" 
-                                Click="btnOpenFile_Click"
-                                CommandParameter="{Binding}"
-                                Margin="3 0 0 0"
-                                Visibility="{Binding DisplayFile, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                VerticalAlignment="Center"
-                                Content="Open"
-                                HorizontalContentAlignment="Center"/>
+                                    Click="btnOpenFile_Click"
+                                    CommandParameter="{Binding}" Margin="3 0 0 0"
+                                    Visibility="{Binding DisplayFile, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    VerticalAlignment="Center" Content="Open"
+                                    HorizontalContentAlignment="Center"/>
                             <TextBlock Text="{Binding Value, Converter={StaticResource PathToNameConverter}}"
-                                   Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
-                                   Margin="5 0 0 0"
-                                   VerticalAlignment="Center"
-                                   Visibility="{Binding DisplayFile, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
+                                       Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
+                                       Margin="5 0 0 0"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding HasTextBlockValue, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <Button x:Name="btnDelJson" Width="30" Click="btnDelJson_Click"
-                                Background="Transparent" BorderThickness="0"
-                                CommandParameter="{Binding}"
-                                Visibility="{Binding ShutOffDelButton, 
-                                Converter={StaticResource InvertBoolToVisibilityConverter}}">
+                                    Background="Transparent" BorderThickness="0" CommandParameter="{Binding}"
+                                    Visibility="{Binding ShutOffDelButton, 
+                                    Converter={StaticResource InvertBoolToVisibilityConverter}}">
                                 <Button.Content>
                                     <Image Source="/RestBoy;component/Resource/delete.png" Width="13" Height="13"/>
                                 </Button.Content>
@@ -110,7 +94,7 @@
                                 <Binding Path="SelectedJsonType"/>
                                 <Binding Path="Key"/>
                                 <Binding Path="Value"/>
-                                <Binding Path="ReadOnly"/>
+                                <Binding Path="HasKey"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>

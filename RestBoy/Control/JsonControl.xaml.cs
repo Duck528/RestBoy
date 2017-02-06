@@ -59,6 +59,25 @@ namespace RestBoy.Control
 
             if (model.SelectedJsonType == JType.Array)
             {
+                model.Childs.Add(new JsonModel(model)
+                {
+                    HasKey = false
+                });
+            }
+            else
+            {
+                model.Childs.Add(new JsonModel(model)
+                {
+                    HasKey = true,
+                    SelectedJsonType = JType.String,
+                    ValueBorderThickness = new Thickness(0, 0, 0, 1),
+                    KeyBorderThickness = new Thickness(0, 0, 0, 1)
+                });
+            }
+
+            /*
+            if (model.SelectedJsonType == JType.Array)
+            {
                 model.Childs.Add(new JsonModel(model, true)
                 {
                     SelectedJsonType = JType.String,
@@ -72,6 +91,7 @@ namespace RestBoy.Control
                     SelectedJsonType = JType.String
                 });
             }
+            */
             
         }
 

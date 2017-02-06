@@ -32,6 +32,9 @@ namespace RestBoy.Converter
                 case JType.String:
                     return new SolidColorBrush(Colors.Red);
 
+                case JType.Boolean:
+                    return new SolidColorBrush(Colors.Blue);
+
                 default:
                     return new SolidColorBrush(Colors.Black);
             }

@@ -50,12 +50,14 @@ namespace RestBoy.ViewModel
             authForm.DataContext = this;
             this.controlMap.Add("auth", authForm);
 
-            this.JsonModels.Add(new JsonModel(null, true)
+            this.JsonModels.Add(new JsonModel(null)
             {
-                Key = "{  }",
                 SelectedJsonType = JType.Object,
                 ShutOffValue = true,
-                ShutOffDelButton = true
+                ShutOffDelButton = true,
+                HasKey = false,
+                ValueBorderThickness = new Thickness(0),
+                ReadOnlyValue = true
             });
             this.JsonModels[0].Childs.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
                 delegate (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
