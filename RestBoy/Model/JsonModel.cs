@@ -340,7 +340,14 @@ namespace RestBoy.Model
 
                 case JType.File:
                     {
-                        builder.Append("\"").Append(Path.GetFileName(this.Value)).Append("\"").Append(",");
+                        byte[] binData = null;
+                        using (var fs = new FileStream(this.Value, FileMode.Open, FileAccess.Read))
+                        {
+                            binData = new byte[fs.Length];
+                            fs.Read(binData, 0, binData.Length);
+                        }
+                        string base64Encoded = System.Convert.ToBase64String(binData);
+                            builder.Append("\"").Append(base64Encoded).Append("\"").Append(",");
                         break;
                     }
 
