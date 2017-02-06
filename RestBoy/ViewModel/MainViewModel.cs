@@ -280,10 +280,9 @@ namespace RestBoy.ViewModel
                 }
                 else if (this.RdoAppJson == true)
                 {
-                    string json = this.JsonModels[0].ToJson();
-                    this.RespText = Regex.Replace(json, ",}", "}").Replace(",]", "]").Replace(",,", ",");
-                    return;
-                    // res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
+                    string text = this.JsonModels[0].ToJson();
+                    string json = Regex.Replace(text, ",}", "}").Replace(",]", "]").Replace(",,", ",");
+                    res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
                 }
             }
 
