@@ -19,18 +19,21 @@ namespace RestBoy.Converter
             var jsonType = (JType)Enum.Parse(typeof(JType), values[0].ToString());
             string key = System.Convert.ToString(values[1]);
             string value = System.Convert.ToString(values[2]);
-            bool isReadonly = (bool)values[3];
+            bool hasKey = (bool)values[3];
 
             switch (jsonType)
             {
                 case JType.Object:
-                    if (isReadonly == true)
-                        return "{ }:";
-                    else
+                    if (hasKey == true)
                         return "\"" + key + "\"" + " : { }";
+                    else
+                        return "{ }:";
 
                 case JType.Array:
-                    return "\"" + key + "\"" + " : [ ]";
+                    if (hasKey == true)
+                        return "\"" + key + "\"" + " : [ ]";
+                    else
+                        return "[ ]:";
 
                 case JType.File:
                     if ("선택된 파일이 없습니다".Equals(value))
@@ -39,16 +42,33 @@ namespace RestBoy.Converter
                         return "\"" + key + "\"" + " : \"(base64)" + Path.GetFileName(value) + "\"";
 
                 case JType.String:
-                    if ("".Equals(key.Trim()))
-                        return "\"" + value + "\"";
-                    else
+                    if (hasKey == true)
                         return "\"" + key + "\"" + " : " + value + "\"";
+                    else
+                        return "\"" + value + "\"";
+                /*
+                if ("".Equals(key.Trim()))
+                    return "\"" + value + "\"";
+                else
+                    return "\"" + key + "\"" + " : " + value + "\"";
+                */
 
                 case JType.Number:
-                    if ("".Equals(key.Trim()))
-                        return value;
-                    else
+                    if (hasKey == true)
                         return "\"" + key + "\"" + " : " + value;
+                    else
+                        return value;
+                /*
+                if ("".Equals(key.Trim()))
+                    return value;
+                else
+                    return "\"" + key + "\"" + " : " + value;
+                */
+                case JType.Boolean:
+                    if (hasKey == true)
+                        return "\"" + key + "\"" + " : " + value;
+                    else
+                        return value;
 
                 default:
                     return "";

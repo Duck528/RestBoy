@@ -61,7 +61,10 @@ namespace RestBoy.Control
             {
                 model.Childs.Add(new JsonModel(model)
                 {
-                    HasKey = false
+                    HasKey = false,
+                    SelectedJsonType = JType.String,
+                    ValueBorderThickness = new Thickness(0, 0, 0, 1),
+                    KeyBorderThickness = new Thickness(0, 0, 0, 1)
                 });
             }
             else
