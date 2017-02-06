@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -280,7 +281,9 @@ namespace RestBoy.ViewModel
                 else if (this.RdoAppJson == true)
                 {
                     string json = this.JsonModels[0].ToJson();
-                    res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
+                    this.RespText = Regex.Replace(json, ",}", "}").Replace(",]", "]").Replace(",,", ",");
+                    return;
+                    // res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
                 }
             }
 

@@ -315,7 +315,8 @@ namespace RestBoy.Model
         public string ToJson()
         {
             var builder = new StringBuilder();
-            if (this.Parent != null || "".Equals(this.Key.Trim()))
+            // if (this.Parent != null || "".Equals(this.Key.Trim()))
+            if (this.HasKey == true)
                 builder.Append("\"").Append(this.Key).Append("\":");
 
             switch (this.SelectedJsonType)
@@ -326,7 +327,7 @@ namespace RestBoy.Model
                         int nRest = this.Childs.Count() - 1;
                         foreach (var model in this.Childs)
                         {
-                            builder.Append("\"").Append(model.Value).Append("\"");
+                            builder.Append(model.ToJson());
                             if (nRest > 0)
                             {
                                 builder.Append(",");
@@ -339,10 +340,9 @@ namespace RestBoy.Model
 
                 case JType.File:
                     {
-                        builder.Append("\"").Append(Path.GetFileName(this.Value)).Append("\"");
+                        builder.Append("\"").Append(Path.GetFileName(this.Value)).Append("\"").Append(",");
                         break;
                     }
-
 
                 case JType.Object:
                     {
@@ -351,26 +351,34 @@ namespace RestBoy.Model
                         {
                             builder.Append(model.ToJson());
                         }
-                        builder.Append("}");
+                        builder.Append("}").Append(",");
                         break;
                     }
 
                 case JType.String:
                     {
-                        builder.Append("\"").Append(this.Value).Append("\"");
+                        builder.Append("\"").Append(this.Value).Append("\"").Append(",");
                         break;
                     }
 
                 case JType.Number:
                     {
-                        builder.Append("\"").Append(this.Value).Append("\"");
+                        builder.Append(this.Value).Append(",");
+                        break;
+                    }
+                case JType.Boolean:
+                    {
+                        builder.Append(this.Value).Append(",");
                         break;
                     }
             }
 
+            /*
             string json = Regex.Replace(builder.ToString(), "\"\"", "\",\"")
                 .Replace("]\"", "],\"").Replace("}\"", "},\"");
-            return json;
+            */
+
+            return builder.ToString();
         }
 
         #region Constructor
