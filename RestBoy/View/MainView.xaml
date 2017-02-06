@@ -153,8 +153,8 @@
                             Visibility="{Binding ParamDisplay, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel.Children>
                             <ListBox ItemsSource="{Binding ParameterModels}" BorderThickness="0" Background="WhiteSmoke"
-                                 ItemContainerStyle="{DynamicResource listboxItemStyle}" 
-                                 SelectedItem="{Binding SelectedParam}">
+                                     ItemContainerStyle="{DynamicResource listboxItemStyle}" 
+                                     SelectedItem="{Binding SelectedParam}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <controls:ParamControl/>
@@ -169,14 +169,14 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBox Grid.Column="0" BorderThickness="0 0 0 1" Background="WhiteSmoke"
-                                     Height="24" Margin="20,3,0,0">
+                                         Height="24" Margin="20,3,0,0">
                                     <TextBox.InputBindings>
                                         <MouseBinding MouseAction="LeftClick" Command="{Binding AddParamCommand}" />
                                     </TextBox.InputBindings>
                                 </TextBox>
 
                                 <TextBox Grid.Column="1" BorderThickness="0 0 0 1" Background="WhiteSmoke"
-                                     Height="24" Margin="20,3,0,0" >
+                                         Height="24" Margin="20,3,0,0">
                                     <TextBox.InputBindings>
                                         <MouseBinding MouseAction="LeftClick" Command="{Binding AddParamCommand}" />
                                     </TextBox.InputBindings>

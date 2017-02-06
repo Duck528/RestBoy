@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RestBoy.Control"
+             xmlns:converter="clr-namespace:RestBoy.Converter"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
     <UserControl.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <Style x:Key="listboxItemStyle" TargetType="ListBoxItem">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -35,14 +37,14 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16 10 0 0">
             <StackPanel.Children>
-                <RadioButton x:Name="rdoFormData" Content="form-data" IsChecked="{Binding RdoFormData}"
-                             Margin="8 0 0 0" Click="rdoFormData_Click"/>
+                <RadioButton x:Name="rdoFormData" Content="form-data" IsChecked="{Binding RdoFormData}" 
+                             Margin="8 0 0 0"/>
                 <RadioButton x:Name="rdoJson" Content="application/json" IsChecked="{Binding RdoAppJson}"
-                             Margin="8 0 0 0" Click="rdoJson_Click"/>
+                             Margin="8 0 0 0"/>
             </StackPanel.Children>
         </StackPanel>
-        
-        <StackPanel x:Name="spFormData" Grid.Row="1" Visibility="Visible">
+
+        <StackPanel Grid.Row="1" Visibility="{Binding RdoFormData, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel.Children>
                 <ListBox x:Name="lbxContainer" Grid.Column="0" Margin="0 10 0 0"
                      ItemsSource="{Binding Bodies}" BorderThickness="0" Background="White"
@@ -76,6 +78,7 @@
             </StackPanel.Children>
         </StackPanel>
 
-        <local:JsonControl x:Name="jsonControl" Grid.Row="1" Visibility="Collapsed" Margin="10" />
+        <local:JsonControl x:Name="jsonControl" Grid.Row="1" 
+                           Visibility="{Binding RdoAppJson, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10" />
     </Grid>
 </UserControl>

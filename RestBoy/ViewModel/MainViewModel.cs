@@ -60,6 +60,8 @@ namespace RestBoy.ViewModel
                         this.JsonModels[0].Key = "{ " + this.JsonModels[0].Childs.Count() + " }";
                     }
                 });
+
+            this.RdoFormData = true;
         }
         #endregion
 
@@ -307,7 +309,6 @@ namespace RestBoy.ViewModel
                 this.RespStatus = res.StatusCode;
                 this.RespStatusMsg = res.StatusMsg;
 
-                // 테스트
                 var model = this.DeepCopy();
                 this.MainViewModels.Add(model);
             }
@@ -841,12 +842,13 @@ namespace RestBoy.ViewModel
             model.RespText = this.RespText;
             model.RespStatus = this.RespStatus;
             model.RespStatusMsg = this.RespStatusMsg;
-            model.RdoFormData = true;
+            model.RdoFormData = this.RdoFormData;
+            model.RdoAppJson = this.RdoAppJson;
             model.DisplayAuthForm = this.DisplayAuthForm;
             model.DisplayBodyForm = this.DisplayBodyForm;
             model.DisplayHeaderForm = this.DisplayHeaderForm;
-            // 나중에 ! 기호를 붙이지 않아도 되도록 리팩토링 하기
             model.ParamDisplay = this.ParamDisplay;
+            model.EnableBodyButton = this.EnableBodyButton;
 
             return model;
         }

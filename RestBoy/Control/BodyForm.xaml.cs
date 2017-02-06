@@ -47,17 +47,5 @@ namespace RestBoy.Control
             string type = btnRadio.Content.ToString();
             this.checkedBodyType = type;
         }
-
-        private void rdoFormData_Click(object sender, RoutedEventArgs e)
-        {
-            this.jsonControl.Visibility = Visibility.Collapsed;
-            this.spFormData.Visibility = Visibility.Visible;
-        }
-
-        private void rdoJson_Click(object sender, RoutedEventArgs e)
-        {
-            this.spFormData.Visibility = Visibility.Collapsed;
-            this.jsonControl.Visibility = Visibility.Visible;
-        }
     }
 }

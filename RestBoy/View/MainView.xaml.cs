@@ -38,9 +38,24 @@ namespace RestBoy.View
             {
                 if (this.selectedViewModel != value)
                 {
+                    MainViewModel beforeMV = this.DataContext as MainViewModel;
+                    if (beforeMV == null)
+                    {
+                        MessageBox.Show("치명적인 오류가 발생했습니다");
+                        return;
+                    }
+
+                    MainViewModel nextMV = value.DeepCopy();
+                    nextMV.RdoFormData = beforeMV.RdoFormData;
+                    nextMV.RdoAppJson = beforeMV.RdoAppJson;
+                    nextMV.DisplayAuthForm = beforeMV.DisplayAuthForm;
+                    nextMV.DisplayBodyForm = beforeMV.DisplayBodyForm;
+                    nextMV.DisplayHeaderForm = beforeMV.DisplayHeaderForm;
+                    nextMV.ParamDisplay = !beforeMV.ParamDisplay;
+                    nextMV.EnableBodyButton = beforeMV.EnableBodyButton;
+
+                    this.DataContext = nextMV;
                     this.selectedViewModel = value;
-                    this.DataContext = value.DeepCopy();
-                    this.ClearSettingButton();
                 }
             }
         }
