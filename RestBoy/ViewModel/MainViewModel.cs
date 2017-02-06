@@ -281,7 +281,7 @@ namespace RestBoy.ViewModel
                 else if (this.RdoAppJson == true)
                 {
                     string text = this.JsonModels[0].ToJson();
-                    string json = Regex.Replace(text, ",}", "}").Replace(",]", "]").Replace(",,", ",");
+                    string json = Regex.Replace(text, ",}", "}").Replace(",]", "]").Replace(",,", ",").Replace("},", "}").Replace("}{", "},{");
                     res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
                 }
             }

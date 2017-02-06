@@ -373,11 +373,6 @@ namespace RestBoy.Model
                     }
             }
 
-            /*
-            string json = Regex.Replace(builder.ToString(), "\"\"", "\",\"")
-                .Replace("]\"", "],\"").Replace("}\"", "},\"");
-            */
-
             return builder.ToString();
         }
 
