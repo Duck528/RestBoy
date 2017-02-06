@@ -52,7 +52,6 @@ namespace RestBoy.View
                     nextMV.DisplayBodyForm = beforeMV.DisplayBodyForm;
                     nextMV.DisplayHeaderForm = beforeMV.DisplayHeaderForm;
                     nextMV.ParamDisplay = !beforeMV.ParamDisplay;
-                    nextMV.EnableBodyButton = beforeMV.EnableBodyButton;
 
                     this.DataContext = nextMV;
                     this.selectedViewModel = value;
