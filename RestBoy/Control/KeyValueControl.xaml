@@ -69,15 +69,18 @@
         </Grid.ColumnDefinitions>
 
         <CheckBox x:Name="chxCheck" Grid.Column="0" VerticalAlignment="Center" 
+                  IsChecked="{Binding IsChecked}"
                   Style="{StaticResource cbxStyle}"
-                  HorizontalAlignment="Right" Click="chxCheck_Checked" 
+                  HorizontalAlignment="Right"
                   SnapsToDevicePixels="True" />
         
-        <TextBox x:Name="tbxKey" Grid.Column="1" Background="Transparent" LostFocus="tbxKey_LostFocus"
+        <TextBox x:Name="tbxKey" Grid.Column="1" Background="Transparent"
+                 Text="{Binding Key}"
                  Style="{StaticResource textBoxStyle}"
                  Height="24" Margin="20 3 0 0">
         </TextBox>
-        <TextBox x:Name="tbxValue" Grid.Column="2" Background="Transparent" LostFocus="tbxValue_LostFocus"
+        <TextBox x:Name="tbxValue" Grid.Column="2" Background="Transparent"
+                 Text="{Binding Value}"
                  Style="{StaticResource textBoxStyle}"
                  BorderThickness="0 0 0 1" Height="24" Margin="20 3 0 0" >
         </TextBox>
@@ -86,8 +89,7 @@
             <StackPanel.Children>
                 <Button Width="20" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left"
                         VerticalAlignment="Bottom" Margin="10 0 0 0" 
-                        Command="{Binding DelKeyValCommand}" 
-                        CommandParameter="{Binding ElementName=headerControl}">
+                        Command="{Binding DelKeyValCommand}">
                     <ContentControl>
                         <Image Source="/RestBoy;component/Resource/trashcan.png" VerticalAlignment="Center" />
                     </ContentControl>

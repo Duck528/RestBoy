@@ -1,14 +1,23 @@
 ﻿using GalaSoft.MvvmLight;
+using Mvvm.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace RestBoy.Model
 {
     public class BodyModel : ObservableObject
     {
+        public ObservableCollection<BodyModel> Parent { get; set; }
+        public BodyModel(ObservableCollection<BodyModel> parent)
+        {
+            this.Parent = parent;
+        }
+
         private string key = string.Empty;
         public string Key
         {
@@ -62,7 +71,7 @@ namespace RestBoy.Model
             }
         }
 
-        private string displayFileName = string.Empty;
+        private string displayFileName = "선택된 파일이 없습니다";
         public string DisplayFileName
         {
             get { return this.displayFileName; }
@@ -89,5 +98,21 @@ namespace RestBoy.Model
                 }
             }
         }
+
+        #region DeleteCommand
+        private ICommand deleteBodyCommand = null;
+        public ICommand DeleteBodyCommand
+        {
+            get
+            {
+                return this.deleteBodyCommand ??
+                  (this.deleteBodyCommand = new DelegateCommand(DeleteBody));
+            }
+        }
+        private void DeleteBody()
+        {
+            this.Parent.Remove(this);
+        }
+        #endregion
     }
 }

@@ -22,60 +22,23 @@ namespace RestBoy.Control
     /// </summary>
     public partial class BodyControl : UserControl
     {
-        private BodyModel body = null;
-        public BodyModel Body
-        {
-            get { return this.body; }
-        }
-        public BodyControl(BodyModel bodyModel)
+        public BodyControl()
         {
             InitializeComponent();
-            this.body = bodyModel;
-            if (body.IsChecked == true)
-                this.chxCheck.IsChecked = true;
-
             this.cbxType.Items.Add("Text");
             this.cbxType.Items.Add("File");
         }
-        private void tbxValue_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null)
-                return;
-
-            string text = textbox.Text.Trim();
-            textbox.Text = text;
-            this.Body.Value = text;
-        }
-        private void tbxKey_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null)
-                return;
-
-            string text = textbox.Text.Trim();
-            textbox.Text = text;
-            this.Body.Key = text;
-        }
+       
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
         {
             var openFileDlg = new OpenFileDialog();
             if (openFileDlg.ShowDialog() == true)
             {
+                var body = this.DataContext as BodyModel;
                 string filePath = openFileDlg.FileName;
-                this.Body.DisplayFileName = Path.GetFileName(filePath);
-                this.Body.FilePath = filePath;
-                this.tbkFileName.Text = this.Body.DisplayFileName;
+                body.DisplayFileName = Path.GetFileName(filePath);
+                body.FilePath = filePath;
             }
-        }
-        private void chxCheck_Checked(object sender, RoutedEventArgs e)
-        {
-            var checkbox = sender as CheckBox;
-            if (checkbox == null)
-                return;
-
-            bool isChecked = checkbox.IsChecked.Value;
-            this.Body.IsChecked = isChecked;
         }
 
         private void cbxType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -85,7 +48,6 @@ namespace RestBoy.Control
                 return;
 
             string type = cbx.SelectedValue.ToString();
-            this.body.ValueType = type;
             switch (type)
             {
                 case "File":

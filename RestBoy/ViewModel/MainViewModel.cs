@@ -190,8 +190,7 @@ namespace RestBoy.ViewModel
             // 입력된 Auth를 가져온다 (있다면)
 
             // 입력된 Header를 가져온다
-            var reqHeaders = from headerControl in this.Headers
-                             select headerControl.Header;
+            var reqHeaders = this.Headers;
             var headers = new Dictionary<string, string>();
             foreach (var param in reqHeaders)
             {
@@ -237,8 +236,7 @@ namespace RestBoy.ViewModel
                 // 만약, AppJson이 선택되어 있다면 JsonModels에서 Json으로 변환한다
                 if (this.RdoFormData == true)
                 {
-                    var reqBodies = from bodyControl in this.Bodies
-                                    select bodyControl.Body;
+                    var reqBodies = this.Bodies;
                     var postParams = new Dictionary<string, object>();
                     foreach (var bodyModel in reqBodies)
                     {
@@ -283,11 +281,11 @@ namespace RestBoy.ViewModel
             {
                 this.RespText = res.RespText;
 
-                // Set Headers 
+                // Set Resp Headers 
                 this.RespHeaders.Clear();
                 foreach (var key in res.Headers.Keys)
                 {
-                    this.RespHeaders.Add(new HeaderModel()
+                    this.RespHeaders.Add(new HeaderModel(null)
                     {
                         Key = key,
                         Value = res.Headers[key]
@@ -298,7 +296,7 @@ namespace RestBoy.ViewModel
                 // Set Cookies
                 foreach (var key in res.Cookies.Keys)
                 {
-                    this.RespCookies.Add(new HeaderModel()
+                    this.RespCookies.Add(new HeaderModel(null)
                     {
                         Key = key,
                         Value = res.Cookies[key]
@@ -538,13 +536,13 @@ namespace RestBoy.ViewModel
         #endregion
 
         #region Bodies
-        private ObservableCollection<BodyControl> bodies = null;
-        public ObservableCollection<BodyControl> Bodies
+        private ObservableCollection<BodyModel> bodies = null;
+        public ObservableCollection<BodyModel> Bodies
         {
             get
             {
                 return this.bodies ??
-                    (this.bodies = new ObservableCollection<BodyControl>());
+                    (this.bodies = new ObservableCollection<BodyModel>());
             }
             private set { this.bodies = value;}
         }
@@ -558,37 +556,20 @@ namespace RestBoy.ViewModel
         }
         private void AddBodyControl()
         {
-            var body = new BodyControl(new BodyModel() { IsChecked = true });
-            body.DataContext = this;
+            var body = new BodyModel(this.Bodies) { IsChecked = true };
             this.Bodies.Add(body);
         }
-        private ICommand deleteBodyCommand = null;
-        public ICommand DeleteBodyCommand
-        {
-            get
-            {
-                return this.deleteBodyCommand ??
-                  (this.deleteBodyCommand = new DelegateCommand<object>(DeleteBody));
-            }
-        }
-        private void DeleteBody(object delBody)
-        {
-            var bodyControl = delBody as BodyControl;
-            if (bodyControl == null)
-                return;
 
-            this.Bodies.Remove(bodyControl);
-        }
         #endregion
 
         #region Headers
-        private ObservableCollection<KeyValueControl> headers = null;
-        public ObservableCollection<KeyValueControl> Headers
+        private ObservableCollection<HeaderModel> headers = null;
+        public ObservableCollection<HeaderModel> Headers
         {
             get
             {
                 return this.headers ?? 
-                    (this.headers = new ObservableCollection<KeyValueControl>());
+                    (this.headers = new ObservableCollection<HeaderModel>());
             }
             private set { this.headers = value; }
         }
@@ -601,25 +582,11 @@ namespace RestBoy.ViewModel
         }
         private void AddKeyVal()
         {
-            var header = new KeyValueControl(new HeaderModel() { IsChecked=true });
-            header.DataContext = this;
+            var header = new HeaderModel(this.Headers) { IsChecked = true };
             this.Headers.Add(header);
         }
 
-        private ICommand delKeyValCommand = null;
-        public ICommand DelKeyValCommand
-        {
-            get { return this.delKeyValCommand ??
-                  (this.delKeyValCommand = new DelegateCommand<object>(DelKeyVal)); }
-        }
-        private void DelKeyVal(object control)
-        {
-            var keyValControl = control as KeyValueControl;
-            if (keyValControl == null)
-                return;
 
-            this.Headers.Remove(keyValControl);
-        }
         #endregion
 
         #region RespHeaders
@@ -793,14 +760,14 @@ namespace RestBoy.ViewModel
         public MainViewModel DeepCopy()
         {
             var model = new MainViewModel(this.MainViewModels);
-            var headers = new ObservableCollection<KeyValueControl>();
-            foreach (var headerControl in this.Headers)
+            var headers = new ObservableCollection<HeaderModel>();
+            foreach (var h in this.Headers)
             {
-                var headerModel = new HeaderModel();
-                headerModel.Key = headerControl.Header.Key;
-                headerModel.Value = headerControl.Header.Value;
-                headerModel.IsChecked = headerControl.Header.IsChecked;
-                headers.Add(new KeyValueControl(headerModel));
+                var headerModel = new HeaderModel(headers);
+                headerModel.Key = h.Key;
+                headerModel.Value = h.Value;
+                headerModel.IsChecked = h.IsChecked;
+                headers.Add(headerModel);
             }
             model.Headers = headers;
 
@@ -814,16 +781,17 @@ namespace RestBoy.ViewModel
             }
             model.ParameterModels = urlParams;
 
-            var multiparts = new ObservableCollection<BodyControl>();
-            foreach (var bodyControl in this.Bodies)
+            var multiparts = new ObservableCollection<BodyModel>();
+            foreach (var b in this.Bodies)
             {
-                var bodyModel = new BodyModel();
-                bodyModel.Key = bodyControl.Body.Key;
-                bodyModel.Value = bodyControl.Body.Value;
-                bodyModel.ValueType = bodyControl.Body.ValueType;
-                bodyModel.IsChecked = bodyControl.Body.IsChecked;
-                bodyModel.FilePath = bodyControl.Body.FilePath;
-                bodyModel.DisplayFileName = bodyControl.Body.DisplayFileName;
+                var bodyModel = new BodyModel(multiparts);
+                bodyModel.Key = b.Key;
+                bodyModel.Value = b.Value;
+                bodyModel.ValueType = b.ValueType;
+                bodyModel.IsChecked = b.IsChecked;
+                bodyModel.FilePath = b.FilePath;
+                bodyModel.DisplayFileName = b.DisplayFileName;
+                multiparts.Add(bodyModel);
             }
             model.Bodies = multiparts;
 
@@ -847,7 +815,7 @@ namespace RestBoy.ViewModel
             var respHeaders = new ObservableCollection<HeaderModel>();
             foreach (var headerModel in this.RespHeaders)
             {
-                var hModel = new HeaderModel();
+                var hModel = new HeaderModel(null);
                 hModel.Key = headerModel.Key;
                 hModel.Value = headerModel.Value;
                 hModel.IsChecked = headerModel.IsChecked;
@@ -859,7 +827,7 @@ namespace RestBoy.ViewModel
             var respCookies = new ObservableCollection<HeaderModel>();
             foreach (var cookieModel in this.RespCookies)
             {
-                var cModel = new HeaderModel();
+                var cModel = new HeaderModel(null);
                 cModel.Key = cookieModel.Key;
                 cModel.Value = cookieModel.Value;
                 cModel.IsChecked = cookieModel.IsChecked;

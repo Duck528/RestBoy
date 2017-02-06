@@ -46,7 +46,13 @@
             <StackPanel.Children>
                 <ListBox x:Name="lbxContainer" Grid.Column="0" Margin="0 10 0 0"
                      ItemsSource="{Binding Bodies}" BorderThickness="0" Background="White"
-                     ItemContainerStyle="{DynamicResource listboxItemStyle}" />
+                     ItemContainerStyle="{DynamicResource listboxItemStyle}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <local:BodyControl/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MinWidth="20" />

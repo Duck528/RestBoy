@@ -21,52 +21,10 @@ namespace RestBoy.Control
     /// </summary>
     public partial class KeyValueControl : UserControl
     {
-        private HeaderModel header = null;
-        public HeaderModel Header
-        {
-            get { return this.header; }
-            private set { this.header = value; }
-        }
-
-        public KeyValueControl(HeaderModel header)
+        public KeyValueControl()
         {
             InitializeComponent();
 
-            this.Header = header;
-            if (this.Header.IsChecked == true)
-                this.chxCheck.IsChecked = true;
-        }
-
-        private void chxCheck_Checked(object sender, RoutedEventArgs e)
-        {
-            var checkbox = sender as CheckBox;
-            if (checkbox == null)
-                return;
-
-            bool isChecked = checkbox.IsChecked.Value;
-            this.header.IsChecked = isChecked;
-        }
-
-        private void tbxKey_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null)
-                return;
-
-            string text = textbox.Text.Trim();
-            textbox.Text = text;
-            this.header.Key = text;
-        }
-
-        private void tbxValue_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textbox = sender as TextBox;
-            if (textbox == null)
-                return;
-
-            string text = textbox.Text.Trim();
-            textbox.Text = text;
-            this.header.Value = text;
         }
     }
 }

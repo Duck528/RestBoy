@@ -76,26 +76,7 @@ namespace RestBoy.Control
                     ValueBorderThickness = new Thickness(0, 0, 0, 1),
                     KeyBorderThickness = new Thickness(0, 0, 0, 1)
                 });
-            }
-
-            /*
-            if (model.SelectedJsonType == JType.Array)
-            {
-                model.Childs.Add(new JsonModel(model, true)
-                {
-                    SelectedJsonType = JType.String,
-                    DisplayArray = true
-                });
-            }
-            else
-            {
-                model.Childs.Add(new JsonModel(model, false)
-                {
-                    SelectedJsonType = JType.String
-                });
-            }
-            */
-            
+            }            
         }
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)

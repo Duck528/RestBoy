@@ -30,7 +30,13 @@
         <StackPanel.Children>
             <ListBox x:Name="lbxContainer" Grid.Column="0" 
                      ItemsSource="{Binding Headers}" BorderThickness="0" Background="White"
-                     ItemContainerStyle="{DynamicResource listboxItemStyle}" />
+                     ItemContainerStyle="{DynamicResource listboxItemStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:KeyValueControl/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
             <Grid>
                 <Grid.ColumnDefinitions>

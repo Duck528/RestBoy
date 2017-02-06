@@ -1,14 +1,26 @@
 ﻿using GalaSoft.MvvmLight;
+using Mvvm.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace RestBoy.Model
 {
     public class HeaderModel : ObservableObject
     {
+        public ObservableCollection<HeaderModel> Parent { get; set; }
+
+        #region Constructor
+        public HeaderModel(ObservableCollection<HeaderModel> parent)
+        {
+            this.Parent = parent;
+        }
+        #endregion
+
         #region IsChecked
         private bool isChecked = false;
         public bool IsChecked
@@ -54,6 +66,22 @@ namespace RestBoy.Model
                     this.RaisePropertyChanged("Value");
                 }
             }
+        }
+        #endregion
+
+        #region DeleteCommand
+        private ICommand delKeyValCommand = null;
+        public ICommand DelKeyValCommand
+        {
+            get
+            {
+                return this.delKeyValCommand ??
+                (this.delKeyValCommand = new DelegateCommand(DelKeyVal));
+            }
+        }
+        private void DelKeyVal()
+        {
+            this.Parent.Remove(this);
         }
         #endregion
     }
