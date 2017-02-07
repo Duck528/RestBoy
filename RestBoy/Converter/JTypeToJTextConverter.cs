@@ -20,6 +20,8 @@ namespace RestBoy.Converter
             string key = System.Convert.ToString(values[1]);
             string value = System.Convert.ToString(values[2]);
             bool hasKey = (bool)values[3];
+            string fileHeader = System.Convert.ToString(values[4]) ?? "base64";
+            fileHeader += ",";
 
             switch (jsonType)
             {
@@ -39,31 +41,20 @@ namespace RestBoy.Converter
                     if ("선택된 파일이 없습니다".Equals(value))
                         return "\"" + key + "\"" + " : \"" + Path.GetFileName(value) + "\"";
                     else
-                        return "\"" + key + "\"" + " : \"(base64)" + Path.GetFileName(value) + "\"";
+                        return "\"" + key + "\"" + $" : \"{fileHeader}(Encoded)" + Path.GetFileName(value) + "\"";
 
                 case JType.String:
                     if (hasKey == true)
                         return "\"" + key + "\"" + " : " + value + "\"";
                     else
                         return "\"" + value + "\"";
-                /*
-                if ("".Equals(key.Trim()))
-                    return "\"" + value + "\"";
-                else
-                    return "\"" + key + "\"" + " : " + value + "\"";
-                */
 
                 case JType.Number:
                     if (hasKey == true)
                         return "\"" + key + "\"" + " : " + value;
                     else
                         return value;
-                /*
-                if ("".Equals(key.Trim()))
-                    return value;
-                else
-                    return "\"" + key + "\"" + " : " + value;
-                */
+
                 case JType.Boolean:
                     if (hasKey == true)
                         return "\"" + key + "\"" + " : " + value;

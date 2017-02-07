@@ -45,18 +45,24 @@
                             <TextBlock Text=" :" Width="15"  Margin="5 0 5 0"
                                        Visibility="{Binding HasKey, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <ComboBox x:Name="cbxJsonType"  ItemsSource="{Binding JsonPropTypes}" 
-                                      FontSize="10" SelectedItem="{Binding SelectedJsonType}" VerticalAlignment="Center" Width="70"/>
-                            <TextBox x:Name="tbxValue" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="60" 
+                                      FontSize="10" SelectedItem="{Binding SelectedJsonType}" VerticalAlignment="Center" Width="65"/>
+                            <TextBox x:Name="tbxValue" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" MinWidth="60" 
+                                     HorizontalAlignment="Stretch"
                                      BorderThickness="{Binding ValueBorderThickness}"
                                      Visibility="{Binding HasTextBoxValue, Converter={StaticResource BooleanToVisibilityConverter}}"
                                      Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
                                      IsReadOnly="{Binding ReadOnlyValue}" Margin="5 0 0 0"/>
-                            <Button x:Name="btnOpenFile" Width="60" 
+                            <Button x:Name="btnOpenFile" Width="50" FontSize="10" Foreground="Gray" FontWeight="Bold"
                                     Click="btnOpenFile_Click"
                                     CommandParameter="{Binding}" Margin="3 0 0 0"
                                     Visibility="{Binding DisplayFile, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     VerticalAlignment="Center" Content="Open"
                                     HorizontalContentAlignment="Center"/>
+                            <TextBox x:Name="tbxFileHeader" 
+                                     Text="{Binding FileHeader, UpdateSourceTrigger=PropertyChanged}" Width="80" Foreground="Gray"
+                                     BorderThickness="{Binding ValueBorderThickness}"
+                                     Visibility="{Binding HasTextBlockValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                     Margin="5 0 0 0"/>
                             <TextBlock Text="{Binding Value, Converter={StaticResource PathToNameConverter}}"
                                        Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"
                                        Margin="5 0 0 0"
@@ -94,6 +100,7 @@
                                 <Binding Path="Key"/>
                                 <Binding Path="Value"/>
                                 <Binding Path="HasKey"/>
+                                <Binding Path="FileHeader"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>

@@ -158,6 +158,20 @@ namespace RestBoy.Model
             }
         }
 
+        private string fileHeader = "Ex) data:image/png;base64";
+        public string FileHeader
+        {
+            get { return this.fileHeader; }
+            set
+            {
+                if (this.fileHeader.Equals(value) == false)
+                {
+                    this.fileHeader = value;
+                    this.RaisePropertyChanged("FileHeader");
+                }
+            }
+        }
+
         private int order = -1;
         public int Order
         {
@@ -347,7 +361,7 @@ namespace RestBoy.Model
                             fs.Read(binData, 0, binData.Length);
                         }
                         string base64Encoded = System.Convert.ToBase64String(binData);
-                            builder.Append("\"").Append(base64Encoded).Append("\"").Append(",");
+                            builder.Append("\"").Append(this.FileHeader).Append(",").Append(base64Encoded).Append("\"").Append(",");
                         break;
                     }
 
