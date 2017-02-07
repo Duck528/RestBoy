@@ -141,12 +141,12 @@ namespace RestBoy.View
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.wrapTbxSeaerchLog.Background = Brushes.White;
+            // this.wrapTbxSeaerchLog.Background = Brushes.White;
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            this.wrapTbxSeaerchLog.Background = Brushes.LightGray;
+            // this.wrapTbxSeaerchLog.Background = Brushes.LightGray;
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
