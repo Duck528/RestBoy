@@ -47,7 +47,7 @@
                             <ComboBox x:Name="cbxJsonType"  ItemsSource="{Binding JsonPropTypes}" 
                                       FontSize="10" SelectedItem="{Binding SelectedJsonType}" VerticalAlignment="Center" Width="65"/>
                             <TextBox x:Name="tbxValue" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" MinWidth="60" 
-                                     HorizontalAlignment="Stretch"
+                                     HorizontalAlignment="Stretch" FontWeight="Bold"
                                      BorderThickness="{Binding ValueBorderThickness}"
                                      Visibility="{Binding HasTextBoxValue, Converter={StaticResource BooleanToVisibilityConverter}}"
                                      Foreground="{Binding SelectedJsonType, Converter={StaticResource JTypeToColorConverter}}"

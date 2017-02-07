@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace RestBoy.Control
 {
     /// <summary>
-    /// thanks to this site, i can suppress warning
+    /// 아래 사이트를 참고하여 웹 브라우저 스크립트 경고를 막을 수 있었다
     /// http://stackoverflow.com/questions/6138199/wpf-webbrowser-control-how-to-supress-script-errors
     /// </summary>
     [ComImport, Guid("6D5140C1-7436-11CE-8034-00AA006009FA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

@@ -189,6 +189,18 @@ namespace RestBoy.ViewModel
                 MessageBox.Show("URL을 입력해주세요");
                 return;
             }
+            bool hasHttp = this.RequestUri.StartsWith("http://", true, null);
+            bool hasHttps = this.RequestUri.StartsWith("https://", true, null);
+            string httpUri = string.Empty;
+            if (hasHttp == false && hasHttps == false)
+            {
+                httpUri = "http://" + this.RequestUri;
+            }
+            else
+            {
+                httpUri = this.RequestUri;
+            }
+
             // 입력된 Auth를 가져온다 (있다면)
 
             // 입력된 Header를 가져온다
@@ -208,7 +220,7 @@ namespace RestBoy.ViewModel
             string uriWithParam = string.Empty;
             if (reqParams.Count() != 0)
             {
-                var paramBuilder = new StringBuilder(this.RequestUri);
+                var paramBuilder = new StringBuilder(httpUri);
                 paramBuilder.Append("?");
                 foreach (var param in reqParams)
                 {
@@ -221,7 +233,7 @@ namespace RestBoy.ViewModel
             }
             else
             {
-                uriWithParam = this.RequestUri;
+                uriWithParam = httpUri;
             }
 
             // 전송 방식(Method)를 가져온다
@@ -274,8 +286,9 @@ namespace RestBoy.ViewModel
                 else if (this.RdoAppJson == true)
                 {
                     string text = this.JsonModels[0].ToJson();
-                    string json = Regex.Replace(text, ",}", "}").Replace(",]", "]")
-                        .Replace(",,", ",").Replace("},", "}").Replace("}{", "},{").Replace("]\"", "],\"");
+                    string filtered = Regex.Replace(text, ",}", "}").Replace(",]", "]").Replace("}\"", "},\"")
+                        .Replace(",,", ",").Replace("}{", "},{").Replace("]\"", "],\"");
+                    string json = Regex.Replace(filtered, ",$", "");
                     res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
                 }
             }
