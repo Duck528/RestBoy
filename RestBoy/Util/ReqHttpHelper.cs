@@ -57,12 +57,15 @@ namespace RestBoy.Util
             {
                 foreach (string key in headers.Keys)
                 {
-                    switch (key)
+                    switch (key.ToLower())
                     {
-                        case "Accept":
+                        case "accept":
                             req.Accept = headers[key];
                             break;
-                        case "Content-Type":
+                        case "accept-language":
+                            req.Headers["accept-language"] = headers[key];
+                            break;
+                        case "content-type":
                             req.ContentType = headers[key];
                             break;
                     }

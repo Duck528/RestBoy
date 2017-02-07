@@ -82,6 +82,7 @@
                         </Border>
                     </StackPanel.Children>
                 </StackPanel>
+                
                 <ListBox x:Name="lbxHistories" ItemsSource="{Binding MainViewModels}" Grid.Row="1" SelectedItem="{Binding SelectedViewModel}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

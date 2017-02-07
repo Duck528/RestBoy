@@ -813,7 +813,7 @@ namespace RestBoy.ViewModel
             var jsonModels = new ObservableCollection<JsonModel>();
             jsonModels.Add(new JsonModel(null)
             {
-                SelectedJsonType = JType.Object,
+                SelectedJsonType = this.JsonModels[0].SelectedJsonType,
                 ShutOffValue = true,
                 ShutOffDelButton = true,
                 HasKey = false,
@@ -826,6 +826,8 @@ namespace RestBoy.ViewModel
                 jsonModels[0].Childs.Add(copiedJsonModel);
             }
             model.JsonModels = jsonModels;
+
+            // 용량 문제로 아래 부분은 저장하지 않는다
 
             var respHeaders = new ObservableCollection<HeaderModel>();
             foreach (var headerModel in this.RespHeaders)
