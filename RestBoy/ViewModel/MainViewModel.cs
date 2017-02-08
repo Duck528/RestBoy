@@ -300,7 +300,7 @@ namespace RestBoy.ViewModel
                     string text = this.JsonModels[0].ToJson();
                     string filtered = Regex.Replace(text, ",}", "}").Replace(",]", "]")
                         .Replace("}\"", "},\"").Replace("}{", "},{").Replace("]\"", "],\"");
-                    string json = Regex.Replace(filtered, ",$", "");
+                    string json = Regex.Replace(filtered, ",$", "").Replace(",,", ",");
 
                     await Task.Run(async () =>
                     {
