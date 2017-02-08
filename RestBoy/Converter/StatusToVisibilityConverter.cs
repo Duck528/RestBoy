@@ -16,7 +16,7 @@ namespace RestBoy.Converter
 
             int? status = (int?)value;
             if (status == null)
-            {
+            { 
                 return Visibility.Collapsed;
             }
             else
