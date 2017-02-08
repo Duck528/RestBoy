@@ -1,6 +1,5 @@
 ## RestBoy
-<hr/>
-
+![alt icon](https://drive.google.com/open?id=0Byzhh67_KW1eMDFzYlZ2N1Z5Wkk)
 ### Overview
 **RestBoy** is an application written in c#(WPF) to support test http protocols especially rest api <br/>
 Inspired by POSTMAN for Chrome.
@@ -12,6 +11,6 @@ Inspired by POSTMAN for Chrome.
 - It is support form-data, application/json and url params
 - Customize http header if you want
 
-### License
-
 ### Usage
+
+### License
