@@ -11,6 +11,7 @@ Inspired by POSTMAN for Chrome.
 - Customize http header if you want
 
 ### Downloads
+###### https://1drv.ms/u/s!AmGzude4yUWtiqdpkXxz0h-RRv-20A
 
 ### Usage
 
