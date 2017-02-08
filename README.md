@@ -1,5 +1,6 @@
-## RestBoy
-![alt icon](https://drive.google.com/open?id=0Byzhh67_KW1eMDFzYlZ2N1Z5Wkk)
+## RestBoy 
+
+![alt icon](./images/restboyicon.png)
 ### Overview
 **RestBoy** is an application written in c#(WPF) to support test http protocols especially rest api <br/>
 Inspired by POSTMAN for Chrome.
