@@ -46,7 +46,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="Gray"/>
+        <Border Grid.Row="0" Background="#FF10341A"/>
         <Grid Grid.Row="0">
         </Grid>
 
@@ -60,7 +60,7 @@
                     <RowDefinition Height="37" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Background="LightGray" />
+                <Border Grid.Row="0" Background="#FF404D42" />
                 <StackPanel Grid.Row="0">
                     <StackPanel.Children>
                         <TextBlock Text="Request Histories" Foreground="White"
@@ -132,8 +132,9 @@
 <!--                            <ColumnDefinition Width="*" MinWidth="60" MaxWidth="60" /> -->
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0" BorderThickness="1" VerticalContentAlignment="Center"
-                              ItemsSource="{Binding Methods}" SelectedItem="{Binding SelectedMethod}"
-                              HorizontalContentAlignment="Center" />
+                                  Background="#FF404D42"
+                                  ItemsSource="{Binding Methods}" SelectedItem="{Binding SelectedMethod}"
+                                  HorizontalContentAlignment="Center" />
 
                         <TextBox x:Name="tbxUri" BorderThickness="1" Grid.Column="1" Grid.ColumnSpan="2"
                               Background="LightGray"  FontSize="14" VerticalAlignment="Stretch"
@@ -144,8 +145,8 @@
                         <Button x:Name="btnDisplayParams" Grid.Column="2" Content="Params" 
                             Command="{Binding ToggleParamDisplayCommand}"
                             Background="LightGray" BorderThickness="1" Click="btnDisplayParams_Click" />
-                        
-                        <Button Grid.Column="3" Content="Send" Background="Blue" 
+
+                        <Button Grid.Column="3" Content="Send" Background="#FF404D42" 
                                 Command="{Binding SendCommand}"
                                 Foreground="White" Padding="1" />
                         
