@@ -290,8 +290,11 @@ namespace RestBoy.ViewModel
                         .Replace(",,", ",").Replace("}{", "},{").Replace("]\"", "],\"");
                     string json = Regex.Replace(filtered, ",$", "");
                     res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
+                } else if (this.RdoRaw == true)
+                {
+                    res = await reqHelper.SendApplicationJson(uriWithParam, method, this.RawText, headers);
                 }
-            }
+            } 
 
             if (res.IsSuccess == true)
             {
@@ -401,8 +404,6 @@ namespace RestBoy.ViewModel
             var paramModel = new ParamModel(order, this.ParameterModels);
             this.ParameterModels.Add(paramModel);
         }
-
-
         #endregion
 
         #region Params
@@ -601,6 +602,17 @@ namespace RestBoy.ViewModel
             this.Headers.Add(header);
         }
 
+        private string rawText = string.Empty;
+        public string RawText
+        {
+            get { return this.rawText; }
+            set
+            {
+                this.rawText = value;
+                this.RaisePropertyChanged("RawText");
+            }
+        }
+
 
         #endregion
 
@@ -723,6 +735,20 @@ namespace RestBoy.ViewModel
                 {
                     this.rdoAppJson = value;
                     this.RaisePropertyChanged("RdoAppJson");
+                }
+            }
+        }
+
+        private bool rdoRaw = false;
+        public bool RdoRaw
+        {
+            get { return this.rdoRaw; }
+            set
+            {
+                if (this.rdoRaw != value)
+                {
+                    this.rdoRaw = value;
+                    this.RaisePropertyChanged("RdoRaw");
                 }
             }
         }
@@ -860,11 +886,13 @@ namespace RestBoy.ViewModel
             model.RespStatusMsg = this.RespStatusMsg;
             model.RdoFormData = this.RdoFormData;
             model.RdoAppJson = this.RdoAppJson;
+            model.RdoRaw = this.RdoRaw;
             model.DisplayAuthForm = this.DisplayAuthForm;
             model.DisplayBodyForm = this.DisplayBodyForm;
             model.DisplayHeaderForm = this.DisplayHeaderForm;
             model.ParamDisplay = this.ParamDisplay;
             model.EnableBodyButton = this.EnableBodyButton;
+            model.RawText = this.RawText;
 
             return model;
         }

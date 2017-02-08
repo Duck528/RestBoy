@@ -12,7 +12,7 @@
         mc:Ignorable="d"
         HorizontalAlignment="Stretch"
         SizeChanged='Window_SizeChanged'
-        VerticalAlignment="Stretch" Title="RestBoy">
+        VerticalAlignment="Stretch" Title="RestBoy" Icon="/RestBoy;component/Resource/restboyicon.ico">
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

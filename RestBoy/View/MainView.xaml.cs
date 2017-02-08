@@ -48,6 +48,7 @@ namespace RestBoy.View
                     MainViewModel nextMV = value.DeepCopy();
                     nextMV.RdoFormData = beforeMV.RdoFormData;
                     nextMV.RdoAppJson = beforeMV.RdoAppJson;
+                    nextMV.RdoRaw = beforeMV.RdoRaw;
                     nextMV.DisplayAuthForm = beforeMV.DisplayAuthForm;
                     nextMV.DisplayBodyForm = beforeMV.DisplayBodyForm;
                     nextMV.DisplayHeaderForm = beforeMV.DisplayHeaderForm;
