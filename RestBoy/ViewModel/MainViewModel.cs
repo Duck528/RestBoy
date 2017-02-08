@@ -181,14 +181,15 @@ namespace RestBoy.ViewModel
         }
         private async void SendRequest()
         {
-            this.RespText = "Loading Now";
-
             this.requestUri = this.requestUri.Trim();
             if ("".Equals(this.requestUri))
             {
                 MessageBox.Show("URL을 입력해주세요");
                 return;
             }
+
+            this.RespText = "Loading Now";
+
             bool hasHttp = this.RequestUri.StartsWith("http://", true, null);
             bool hasHttps = this.RequestUri.StartsWith("https://", true, null);
             string httpUri = string.Empty;
@@ -286,11 +287,12 @@ namespace RestBoy.ViewModel
                 else if (this.RdoAppJson == true)
                 {
                     string text = this.JsonModels[0].ToJson();
-                    string filtered = Regex.Replace(text, ",}", "}").Replace(",]", "]").Replace("}\"", "},\"")
-                        .Replace(",,", ",").Replace("}{", "},{").Replace("]\"", "],\"");
+                    string filtered = Regex.Replace(text, ",}", "}").Replace(",]", "]")
+                        .Replace("}\"", "},\"").Replace("}{", "},{").Replace("]\"", "],\"");
                     string json = Regex.Replace(filtered, ",$", "");
                     res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
-                } else if (this.RdoRaw == true)
+                }
+                else if (this.RdoRaw == true)
                 {
                     res = await reqHelper.SendApplicationJson(uriWithParam, method, this.RawText, headers);
                 }
@@ -323,7 +325,7 @@ namespace RestBoy.ViewModel
                 }
                 this.NumCookies = this.RespCookies.Count();
 
-                this.RespStatus = res.StatusCode;
+                this.RespStatus = res.StatusCode.Value;
                 this.RespStatusMsg = res.StatusMsg;
 
                 var model = this.DeepCopy();
@@ -331,7 +333,26 @@ namespace RestBoy.ViewModel
             }
             else
             {
-                this.RespText = res.ErrorMsg;
+                if ("".Equals(res.RespText) || res.RespText == null)
+                    this.RespText = res.ErrorMsg;
+                else
+                    this.RespText = res.RespText;
+
+                if (res.StatusCode != null)
+                    this.RespStatus = res.StatusCode.Value;
+                else
+                    this.RespStatus = null;
+
+                if (res.StatusMsg != null || "".Equals(res.StatusMsg))
+                    this.RespStatusMsg = res.StatusMsg;
+                else
+                    this.RespStatusMsg = "";
+
+                this.RespHeaders.Clear();
+                this.NumHeaders = 0;
+
+                this.RespCookies.Clear();
+                this.NumCookies = 0;
             }
         }
         #endregion
@@ -643,8 +664,8 @@ namespace RestBoy.ViewModel
         #endregion
 
         #region RespStatus
-        private int respStatus = -1;
-        public int RespStatus
+        private int? respStatus = null;
+        public int? RespStatus
         {
             get { return this.respStatus; }
             set

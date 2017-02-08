@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace RestBoy.Util
         public Dictionary<string, string> Headers { get; set; }
         public Dictionary<string, string> Cookies { get; set; }
         public string RespText { get; set; }
-        public int StatusCode { get; set; }
+        public int? StatusCode { get; set; }
         public string StatusMsg { get; set; }
         public bool IsSuccess { get; set; }
         public string ErrorMsg { get; set; }
@@ -45,6 +46,7 @@ namespace RestBoy.Util
         public readonly Encoding EncodingType = Encoding.UTF8;
         private static readonly string CRLF = "\r\n";
         private static readonly string ContentType = "multipart/form-data; boundary=";
+        private static readonly string UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
         public ReqHttpHelper(Encoding encType = null)
         {
             if (encType != null)
@@ -129,25 +131,27 @@ namespace RestBoy.Util
                     return binData;
                 }
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                return null;
+                throw new Exception(exp.Message);
             }
         }
         public async Task<HttpRespVo> Get(string uri, Dictionary<string, string> setHeaders = null)
         {
+            var result = new HttpRespVo();
+
             try
             {
                 var webRequest = (HttpWebRequest)WebRequest.Create(uri);
                 webRequest.Method = "GET";
                 webRequest.ServicePoint.Expect100Continue = false;
                 webRequest.CookieContainer = new CookieContainer();
+                webRequest.UserAgent = UserAgent;
 
                 // Set header
                 if (setHeaders != null)
                     SetHttpHeaders(webRequest, setHeaders);
-
-                var result = new HttpRespVo();
+                
                 using (var response = await webRequest.GetResponseAsync())
                 {
                     HttpWebResponse webResponse = (HttpWebResponse)response;
@@ -180,29 +184,41 @@ namespace RestBoy.Util
                 result.IsSuccess = true;
                 return result;
             }
-            catch (IOException exp)
+            catch (WebException exp)
             {
-                return new HttpRespVo()
+                if (exp.Response != null)
                 {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message
-                };
-            }
-            catch (InvalidCastException exp)
-            {
-                return new HttpRespVo()
+                    using (var httpResponse = (HttpWebResponse)exp.Response)
+                    {
+                        var respStream = httpResponse.GetResponseStream();
+                        var reader = new StreamReader(respStream);
+
+                        result.IsSuccess = false;
+                        result.RespText = await reader.ReadToEndAsync();
+                        result.StatusCode = (int)httpResponse.StatusCode;
+                        result.StatusMsg = httpResponse.StatusCode.ToString();
+                        return result;
+                    }
+                }
+
+                // 네트워크에 연결되어 있는지 검사한다
+                bool isConnected = NetworkInterface.GetIsNetworkAvailable();
+                if (isConnected == false)
                 {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message
-                };
+                    result.IsSuccess = false;
+                    result.ErrorMsg = "네트워크에 연결되어 있지 않습니다";
+                    return result;
+                }
+
+                result.IsSuccess = false;
+                result.ErrorMsg = exp.Message;
+                return result;
             }
             catch (Exception exp)
             {
-                return new HttpRespVo()
-                {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message,
-                };
+                result.IsSuccess = false;
+                result.ErrorMsg = exp.Message;
+                return result;
             }
         }
         public async Task<HttpRespVo> SendMultipart(string uri, string method,
@@ -220,6 +236,7 @@ namespace RestBoy.Util
                 webRequest.Method = method;
                 // Set cookie container to retrive cookies
                 webRequest.CookieContainer = new CookieContainer();
+                webRequest.UserAgent = UserAgent;
                 // Set headers if not null
                 if (setHeaders != null)
                     this.SetHttpHeaders(webRequest, setHeaders);
@@ -270,13 +287,36 @@ namespace RestBoy.Util
                 result.IsSuccess = true;
                 return result;
             }
-            catch (InvalidCastException exp)
+            catch (WebException exp)
             {
-                return new HttpRespVo()
+                if (exp.Response != null)
                 {
-                    IsSuccess = false,
-                    ErrorMsg = exp.Message
-                };
+                    using (var httpResponse = (HttpWebResponse)exp.Response)
+                    {
+                        var respStream = httpResponse.GetResponseStream();
+                        var reader = new StreamReader(respStream, UTF8Encoding.UTF8, true);
+
+                        result.IsSuccess = false;
+                        result.RespText = await reader.ReadToEndAsync();
+                        result.StatusCode = (int)httpResponse.StatusCode;
+                        result.StatusMsg = httpResponse.StatusCode.ToString();
+                        return result;
+                    }
+                }
+
+                // 네트워크에 연결되어 있는지 검사한다
+                bool isConnected = NetworkInterface.GetIsNetworkAvailable();
+                if (isConnected == false)
+                {
+                    result.IsSuccess = false;
+                    result.ErrorMsg = "네트워크에 연결되어 있지 않습니다";
+                    return result;
+                }
+
+                result.StatusCode = (int)exp.Status;
+                result.StatusMsg = exp.Status.ToString();
+                result.IsSuccess = false;
+                return result;
             }
             catch (Exception exp)
             {
@@ -301,6 +341,7 @@ namespace RestBoy.Util
                 webRequest.Method = method;
                 // Set cookie container to retrive cookies
                 webRequest.CookieContainer = new CookieContainer();
+                webRequest.UserAgent = UserAgent;
                 // Set headers if not null
                 if (setHeaders != null)
                     this.SetHttpHeaders(webRequest, setHeaders);
@@ -311,7 +352,6 @@ namespace RestBoy.Util
                 {
                     streamWriter.Write(json);
                 }
-
                 
                 using (var response = await webRequest.GetResponseAsync())
                 {
@@ -343,6 +383,36 @@ namespace RestBoy.Util
                     result.StatusMsg = webResponse.StatusCode.ToString();
                 }
                 result.IsSuccess = true;
+                return result;
+            }
+            catch (WebException exp)
+            {
+                if (exp.Response != null)
+                {
+                    using (var httpResponse = (HttpWebResponse)exp.Response)
+                    {
+                        var respStream = httpResponse.GetResponseStream();
+                        var reader = new StreamReader(respStream, UTF8Encoding.UTF8, true);
+
+                        result.IsSuccess = false;
+                        result.RespText = await reader.ReadToEndAsync();
+                        result.StatusCode = (int)httpResponse.StatusCode;
+                        result.StatusMsg = httpResponse.StatusCode.ToString();
+                        return result;
+                    }
+                }
+
+                // 네트워크에 연결되어 있는지 검사한다
+                bool isConnected = NetworkInterface.GetIsNetworkAvailable();
+                if (isConnected == false)
+                {
+                    result.IsSuccess = false;
+                    result.ErrorMsg = "네트워크에 연결되어 있지 않습니다";
+                    return result;
+                }
+
+                result.IsSuccess = false;
+                result.ErrorMsg = exp.Message;
                 return result;
             }
             catch (Exception exp)
