@@ -1,6 +1,4 @@
-## RestBoy 
-
-![alt icon](./images/restboyicon.png)
+## RestBoy <img src="./images/restboyicon.png" height="30" width="30"/>
 ### Overview
 **RestBoy** is an application written in c#(WPF) to support test http protocols especially rest api <br/>
 Inspired by POSTMAN for Chrome.
