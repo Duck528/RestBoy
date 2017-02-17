@@ -13,9 +13,10 @@ namespace RestBoy.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int status = (int)value;
-            if (status == -1)
-            {
+
+            int? status = (int?)value;
+            if (status == null)
+            { 
                 return Visibility.Collapsed;
             }
             else

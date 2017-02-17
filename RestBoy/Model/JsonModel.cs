@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using Mvvm.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,12 +10,23 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace RestBoy.Model
 {
     public enum JType { Object, Array, File, Number, String, Boolean };
     public class JsonModel : ObservableObject
     {
+        private static int nCount = 0;
+
+        private int id = -1;
+        public int Id
+        {
+            get { return this.id; }
+            private set { this.id = value; }
+        }
+
         /// <summary>
         /// DisplayAdd는 SelelctedJsonType이 Object, Array인 경우에 true로 셋팅된다
         /// </summary>
@@ -400,6 +412,10 @@ namespace RestBoy.Model
         #region Constructor
         public JsonModel(JsonModel parent)
         {
+            // Set id to distinguish json model
+            this.Id = JsonModel.nCount;
+            JsonModel.nCount += 1;
+
             this.Childs = new ObservableCollection<JsonModel>();
             this.Childs.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
                 delegate (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -441,14 +457,14 @@ namespace RestBoy.Model
             jsonModel.ShutOffValue = this.ShutOffValue;
             jsonModel.Value = this.Value;
             jsonModel.ValueBorderThickness = this.ValueBorderThickness;
+            jsonModel.Id = this.Id;
 
-            var jsonModelChilds = new ObservableCollection<JsonModel>();
             foreach (var model in this.Childs)
             {
                 var jModel = model.RecursiveDeepCopy();
-                jsonModelChilds.Add(jModel);
+                jsonModel.Childs.Add(jModel);
             }
-            jsonModel.Childs = jsonModelChilds;
+            
             return jsonModel;
         }
         #endregion

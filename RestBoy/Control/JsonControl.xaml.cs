@@ -23,14 +23,6 @@ namespace RestBoy.Control
     /// </summary>
     public partial class JsonControl : UserControl
     {
-        private ObservableCollection<JsonModel> jsonModels = null;
-        public ObservableCollection<JsonModel> JsonModels
-        {
-            get
-            {
-                return this.jsonModels ?? (this.jsonModels = new ObservableCollection<JsonModel>());
-            }
-        }
         public JsonControl()
         {
             InitializeComponent();
@@ -40,11 +32,50 @@ namespace RestBoy.Control
         {
             var button = sender as Button;
             if (button == null)
+            {
                 return;
+            }
 
             var model = button.CommandParameter as JsonModel;
-            var parentModel = model.Parent;
-            parentModel.Childs.Remove(model);
+            if (model == null)
+            {
+                return;
+            }
+
+            // 너비우선 탐색 방식으로 삭제할 컨트롤을 찾아 삭제한다
+            var models = this.tvJson.ItemsSource as ObservableCollection<JsonModel>;
+            if (models == null)
+            {
+                return;
+            }
+
+            var queue = new Queue<ObservableCollection<JsonModel>>();
+            queue.Enqueue(models[0].Childs);
+            while (queue.Count() != 0)
+            {
+                ObservableCollection<JsonModel> temp = queue.Dequeue();
+                var finded = temp.Where(t =>
+                {
+                    if (t.Id == model.Id)
+                        return true;
+                    else
+                        return false;
+                }).FirstOrDefault();
+
+                if (finded != null)
+                {
+                    bool isDeleted = temp.Remove(finded);
+                    if (isDeleted == true)
+                    {
+                        break;
+                    }
+                }
+
+                foreach (var jsonModel in temp)
+                {
+                    queue.Enqueue(jsonModel.Childs);
+                }
+            }
         }
 
         private void btnAddJson_Click(object sender, RoutedEventArgs e)

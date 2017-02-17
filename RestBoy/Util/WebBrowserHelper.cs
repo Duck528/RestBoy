@@ -10,10 +10,10 @@ namespace RestBoy.Util
 {
     class WebBrowserHelper
     {
-        public static readonly DependencyProperty BodyProperty = 
+        public static readonly DependencyProperty BodyProperty =
             DependencyProperty.RegisterAttached(
-                "Body", 
-                typeof(string), 
+                "Body",
+                typeof(string),
                 typeof(WebBrowserHelper), new PropertyMetadata(OnBodyChanged));
 
         public static string GetBody(DependencyObject dependencyObject)

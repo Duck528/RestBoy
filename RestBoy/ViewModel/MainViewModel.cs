@@ -181,14 +181,17 @@ namespace RestBoy.ViewModel
         }
         private async void SendRequest()
         {
-            this.RespText = "Loading Now";
-
             this.requestUri = this.requestUri.Trim();
             if ("".Equals(this.requestUri))
             {
                 MessageBox.Show("URL을 입력해주세요");
                 return;
             }
+
+            this.RespText = "Loading Now";
+            this.RespStatus = null;
+            this.RespStatusMsg = "";
+
             bool hasHttp = this.RequestUri.StartsWith("http://", true, null);
             bool hasHttps = this.RequestUri.StartsWith("https://", true, null);
             string httpUri = string.Empty;
@@ -242,7 +245,12 @@ namespace RestBoy.ViewModel
             HttpRespVo res = null;
             var reqHelper = new ReqHttpHelper();
             if (method.Equals("GET"))
-                res = await reqHelper.Get(uriWithParam, headers);
+            {
+                await Task.Run(async () =>
+                {
+                    res = await reqHelper.Get(uriWithParam, headers);
+                });
+            }
             else
             {
                 // 입력된 Body 매개변수를 가져온다
@@ -281,17 +289,34 @@ namespace RestBoy.ViewModel
                                 break;
                         }
                     }
-                    res = await reqHelper.SendMultipart(uriWithParam, method, postParams, headers);
+                    await Task.Run(async () =>
+                    {
+                        res = await reqHelper.SendMultipart(
+                            uriWithParam, method, postParams, headers);
+                    });
                 }
                 else if (this.RdoAppJson == true)
                 {
                     string text = this.JsonModels[0].ToJson();
-                    string filtered = Regex.Replace(text, ",}", "}").Replace(",]", "]").Replace("}\"", "},\"")
-                        .Replace(",,", ",").Replace("}{", "},{").Replace("]\"", "],\"");
-                    string json = Regex.Replace(filtered, ",$", "");
-                    res = await reqHelper.SendApplicationJson(uriWithParam, method, json, headers);
+                    string filtered = Regex.Replace(text, ",}", "}").Replace(",]", "]")
+                        .Replace("}\"", "},\"").Replace("}{", "},{").Replace("]\"", "],\"");
+                    string json = Regex.Replace(filtered, ",$", "").Replace(",,", ",");
+
+                    await Task.Run(async () =>
+                    {
+                        res = await reqHelper.SendApplicationJson(
+                            uriWithParam, method, json, headers);
+                    });
                 }
-            }
+                else if (this.RdoRaw == true)
+                {
+                    await Task.Run(async () =>
+                    {
+                        res = await reqHelper.SendApplicationJson(
+                            uriWithParam, method, this.RawText, headers);
+                    });
+                }
+            } 
 
             if (res.IsSuccess == true)
             {
@@ -320,7 +345,7 @@ namespace RestBoy.ViewModel
                 }
                 this.NumCookies = this.RespCookies.Count();
 
-                this.RespStatus = res.StatusCode;
+                this.RespStatus = res.StatusCode.Value;
                 this.RespStatusMsg = res.StatusMsg;
 
                 var model = this.DeepCopy();
@@ -328,7 +353,26 @@ namespace RestBoy.ViewModel
             }
             else
             {
-                this.RespText = res.ErrorMsg;
+                if ("".Equals(res.RespText) || res.RespText == null)
+                    this.RespText = res.ErrorMsg;
+                else
+                    this.RespText = res.RespText;
+
+                if (res.StatusCode != null)
+                    this.RespStatus = res.StatusCode.Value;
+                else
+                    this.RespStatus = null;
+
+                if (res.StatusMsg != null || "".Equals(res.StatusMsg))
+                    this.RespStatusMsg = res.StatusMsg;
+                else
+                    this.RespStatusMsg = "";
+
+                this.RespHeaders.Clear();
+                this.NumHeaders = 0;
+
+                this.RespCookies.Clear();
+                this.NumCookies = 0;
             }
         }
         #endregion
@@ -401,8 +445,6 @@ namespace RestBoy.ViewModel
             var paramModel = new ParamModel(order, this.ParameterModels);
             this.ParameterModels.Add(paramModel);
         }
-
-
         #endregion
 
         #region Params
@@ -601,6 +643,17 @@ namespace RestBoy.ViewModel
             this.Headers.Add(header);
         }
 
+        private string rawText = string.Empty;
+        public string RawText
+        {
+            get { return this.rawText; }
+            set
+            {
+                this.rawText = value;
+                this.RaisePropertyChanged("RawText");
+            }
+        }
+
 
         #endregion
 
@@ -631,8 +684,8 @@ namespace RestBoy.ViewModel
         #endregion
 
         #region RespStatus
-        private int respStatus = -1;
-        public int RespStatus
+        private int? respStatus = null;
+        public int? RespStatus
         {
             get { return this.respStatus; }
             set
@@ -723,6 +776,20 @@ namespace RestBoy.ViewModel
                 {
                     this.rdoAppJson = value;
                     this.RaisePropertyChanged("RdoAppJson");
+                }
+            }
+        }
+
+        private bool rdoRaw = false;
+        public bool RdoRaw
+        {
+            get { return this.rdoRaw; }
+            set
+            {
+                if (this.rdoRaw != value)
+                {
+                    this.rdoRaw = value;
+                    this.RaisePropertyChanged("RdoRaw");
                 }
             }
         }
@@ -828,7 +895,6 @@ namespace RestBoy.ViewModel
             model.JsonModels = jsonModels;
 
             // 용량 문제로 아래 부분은 저장하지 않는다
-
             var respHeaders = new ObservableCollection<HeaderModel>();
             foreach (var headerModel in this.RespHeaders)
             {
@@ -856,17 +922,87 @@ namespace RestBoy.ViewModel
             model.RequestUri = this.RequestUri;
             model.SelectedMethod = this.SelectedMethod;
             model.RespText = this.RespText;
+
             model.RespStatus = this.RespStatus;
             model.RespStatusMsg = this.RespStatusMsg;
             model.RdoFormData = this.RdoFormData;
             model.RdoAppJson = this.RdoAppJson;
+            model.RdoRaw = this.RdoRaw;
             model.DisplayAuthForm = this.DisplayAuthForm;
             model.DisplayBodyForm = this.DisplayBodyForm;
             model.DisplayHeaderForm = this.DisplayHeaderForm;
             model.ParamDisplay = this.ParamDisplay;
             model.EnableBodyButton = this.EnableBodyButton;
+            model.RawText = this.RawText;
+
+            model.DisplayBrowser = false;
+            model.DisplayRaw = true;
 
             return model;
+        }
+        #endregion
+
+        #region RespBodyForm
+        private ICommand clickPreviewCommand = null;
+        public ICommand ClickPreviewCommand
+        {
+            get
+            {
+                return this.clickPreviewCommand ??
+                  (this.clickPreviewCommand = new DelegateCommand<object>(RenderingBrowser));
+            }
+        }
+        private void RenderingBrowser(object control)
+        {
+            var browser = control as WebBrowser;
+            if (browser == null)
+                return;
+
+            browser.NavigateToString(this.RespText);
+            this.DisplayBrowser = true;
+            this.DisplayRaw = false;
+        }
+
+        private bool displayBrowser = false;
+        public bool DisplayBrowser
+        {
+            get { return this.displayBrowser; }
+            set
+            {
+                if (this.displayBrowser != value)
+                {
+                    this.displayBrowser = value;
+                    this.RaisePropertyChanged("DisplayBrowser");
+                }
+            }
+        }
+
+        private bool displayRaw = true;
+        public bool DisplayRaw
+        {
+            get { return this.displayRaw; }
+            set
+            {
+                if (this.displayRaw != value)
+                {
+                    this.displayRaw = value;
+                    this.RaisePropertyChanged("DisplayRaw");
+                }
+            }
+        }
+
+        private ICommand clickRawCommand = null;
+        public ICommand ClickRawCommand
+        {
+            get
+            {
+                return this.clickRawCommand ?? 
+                    (this.clickRawCommand = new DelegateCommand(() => 
+                    {
+                        this.DisplayBrowser = false;
+                        this.DisplayRaw = true;
+                    }));
+            }
         }
         #endregion
     }
