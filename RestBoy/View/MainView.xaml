@@ -226,9 +226,14 @@
                         </StackPanel>
                     </Grid>
                     <StackPanel Grid.Row="3" HorizontalAlignment="Stretch">
-                        <controls:HeaderForm Visibility="{Binding DisplayHeaderForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <controls:BodyForm Visibility="{Binding DisplayBodyForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <controls:AuthForm Visibility="{Binding DisplayAuthForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <controls:HeaderForm 
+                            Visibility="{Binding DisplayHeaderForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        
+                        <controls:BodyForm x:Name="bodyForm"
+                            Visibility="{Binding DisplayBodyForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        
+                        <controls:AuthForm 
+                            Visibility="{Binding DisplayAuthForm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </StackPanel>
                     <controls:ResponseForm Grid.Row="4" 
                                            Margin="0 10 0 0"/>

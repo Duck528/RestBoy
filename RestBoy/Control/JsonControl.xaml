@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <TreeView ItemsSource="{Binding JsonModels, IsAsync=True}" MinWidth="500" DockPanel.Dock="Left">
+        <TreeView x:Name="tvJson" ItemsSource="{Binding JsonModels, IsAsync=True}" MinWidth="500" DockPanel.Dock="Left">
             <TreeView.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
@@ -68,8 +68,10 @@
                                        Margin="5 0 0 0"
                                        VerticalAlignment="Center"
                                        Visibility="{Binding HasTextBlockValue, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                            <Button x:Name="btnDelJson" Width="30" Click="btnDelJson_Click"
-                                    Background="Transparent" BorderThickness="0" CommandParameter="{Binding}"
+                            <Button x:Name="btnDelJson" Width="30"
+                                    Background="Transparent" BorderThickness="0" 
+                                    CommandParameter="{Binding}"
+                                    Click="btnDelJson_Click"
                                     Visibility="{Binding ShutOffDelButton, 
                                     Converter={StaticResource InvertBoolToVisibilityConverter}}">
                                 <Button.Content>
@@ -78,9 +80,9 @@
                             </Button>
                         </StackPanel>
                         <Button Click="btnAddJson_Click" DockPanel.Dock="Bottom" Background="Transparent"
-                            Margin="0 5 0 0" BorderThickness="0"
-                            CommandParameter="{Binding}" Width="20" HorizontalAlignment="Left"
-                            Visibility="{Binding DisplayAdd, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                Margin="0 5 0 0" BorderThickness="0"
+                                CommandParameter="{Binding}" Width="20" HorizontalAlignment="Left"
+                                Visibility="{Binding DisplayAdd, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Button.Content>
                                 <Image Source="/RestBoy;component/Resource/plus.png" Width="12" Height="12"/>
                             </Button.Content>

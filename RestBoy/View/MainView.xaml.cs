@@ -25,7 +25,8 @@ namespace RestBoy.View
     /// </summary>
     public partial class MainView : Window
     {
-        private ObservableCollection<MainViewModel> mainViewModels = new ObservableCollection<MainViewModel>();
+        private ObservableCollection<MainViewModel> mainViewModels 
+            = new ObservableCollection<MainViewModel>();
         public ObservableCollection<MainViewModel> MainViewModels
         {
             get { return this.mainViewModels; }
@@ -41,11 +42,12 @@ namespace RestBoy.View
                     MainViewModel beforeMV = this.DataContext as MainViewModel;
                     if (beforeMV == null)
                     {
-                        MessageBox.Show("치명적인 오류가 발생했습니다");
+                        MessageBox.Show("Internal program error");
                         return;
                     }
-
                     MainViewModel nextMV = value.DeepCopy();
+                    this.DataContext = nextMV;
+
                     nextMV.RdoFormData = beforeMV.RdoFormData;
                     nextMV.RdoAppJson = beforeMV.RdoAppJson;
                     nextMV.RdoRaw = beforeMV.RdoRaw;
@@ -54,7 +56,6 @@ namespace RestBoy.View
                     nextMV.DisplayHeaderForm = beforeMV.DisplayHeaderForm;
                     nextMV.ParamDisplay = !beforeMV.ParamDisplay;
 
-                    this.DataContext = nextMV;
                     this.selectedViewModel = value;
                 }
             }
@@ -138,16 +139,6 @@ namespace RestBoy.View
                 this.btnDisplayParams.Background = Brushes.LightGray;
             else
                 this.btnDisplayParams.Background = Brushes.White;
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            // this.wrapTbxSeaerchLog.Background = Brushes.White;
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            // this.wrapTbxSeaerchLog.Background = Brushes.LightGray;
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
