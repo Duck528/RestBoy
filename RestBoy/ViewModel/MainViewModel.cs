@@ -841,6 +841,10 @@ namespace RestBoy.ViewModel
         #endregion
 
         #region DeepCopy
+        public Task<MainViewModel> AsyncDeepCopy()
+        {
+            return Task.Run(() => DeepCopy());
+        }
         public MainViewModel DeepCopy()
         {
             var model = new MainViewModel(this.MainViewModels);

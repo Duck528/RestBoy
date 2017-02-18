@@ -39,13 +39,14 @@ namespace RestBoy.View
             {
                 if (this.selectedViewModel != value)
                 {
-                    MainViewModel beforeMV = this.DataContext as MainViewModel;
+                    var beforeMV = this.DataContext as MainViewModel;
                     if (beforeMV == null)
                     {
                         MessageBox.Show("Internal program error");
                         return;
                     }
-                    MainViewModel nextMV = value.DeepCopy();
+
+                    MainViewModel nextMV = value.AsyncDeepCopy().Result;
                     this.DataContext = nextMV;
 
                     nextMV.RdoFormData = beforeMV.RdoFormData;
