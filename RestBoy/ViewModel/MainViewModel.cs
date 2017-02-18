@@ -191,6 +191,8 @@ namespace RestBoy.ViewModel
             this.RespText = "Loading Now";
             this.RespStatus = null;
             this.RespStatusMsg = "";
+            this.DisplayBrowser = false;
+            this.DisplayRaw = true;
 
             bool hasHttp = this.RequestUri.StartsWith("http://", true, null);
             bool hasHttps = this.RequestUri.StartsWith("https://", true, null);
